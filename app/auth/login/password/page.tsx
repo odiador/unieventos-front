@@ -52,6 +52,7 @@ function Login() {
         <>
             <h1 className="text-center text-2xl font-semibold">Bienvenido a Unieventos</h1>
             <p className="text-left text-sm opacity-80 font-normal">Inicia Sesión</p>
+            <input type="email" defaultValue={mail} className="hidden" />
             <input type="password"
                 className="bg-[#131517]/30 border-2 w-full border-white/10 rounded-md h-10 px-2 text-white selection:bg-cyan-700 focus:outline-none focus:border-white/50 transition-colors"
                 value={password}
