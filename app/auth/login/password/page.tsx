@@ -1,7 +1,7 @@
 "use client";
-import { IconLoader, IconLoader2, IconLoaderQuarter, IconTruckLoading } from "@tabler/icons-react";
+import { IconLoader } from "@tabler/icons-react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 
 export default function Login() {
@@ -49,7 +49,7 @@ export default function Login() {
         });
     }
     return (
-        <>
+        <Suspense>
             <h1 className="text-center text-2xl font-semibold">Bienvenido a Unieventos</h1>
             <p className="text-left text-sm opacity-80 font-normal">Inicia Sesión</p>
             <input type="password"
@@ -62,5 +62,5 @@ export default function Login() {
                 {loading && <IconLoader className="animate-spin text-black/50" />}
                 {!loading && "Iniciar Sesión"}</button>
             <button onClick={(() => router.push(`/auth/login?mail=${encodeURIComponent(mail)}`))} type="button" className="button-secondary">Volver</button>
-        </>);
+        </Suspense>);
 }
