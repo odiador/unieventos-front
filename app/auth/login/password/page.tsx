@@ -4,7 +4,7 @@ import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
 
-export default function Login() {
+function Login() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const mail = searchParams.get("mail");
@@ -40,7 +40,7 @@ export default function Login() {
                                 }
                             });
                         }
-                    }else {
+                    } else {
                         console.log(json.message);
                         setPasswordMessage("")
                     }
@@ -49,7 +49,7 @@ export default function Login() {
         });
     }
     return (
-        <Suspense>
+        <>
             <h1 className="text-center text-2xl font-semibold">Bienvenido a Unieventos</h1>
             <p className="text-left text-sm opacity-80 font-normal">Inicia Sesión</p>
             <input type="password"
@@ -62,5 +62,8 @@ export default function Login() {
                 {loading && <IconLoader className="animate-spin text-black/50" />}
                 {!loading && "Iniciar Sesión"}</button>
             <button onClick={(() => router.push(`/auth/login?mail=${encodeURIComponent(mail)}`))} type="button" className="button-secondary">Volver</button>
-        </Suspense>);
+        </>);
+}
+export default function LoginWPassword() {
+    return <Suspense children={<Login />} />
 }
