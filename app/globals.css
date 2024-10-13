@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+   color: rgb(255, 255, 255);
+}
+
+@layer utilities {
+   .text-balance {
+      text-wrap: balance;
+   }
+}
+
+@property --angle {
+   syntax: "<angle>";
+   initial-value: 0deg;
+   inherits: false;
+}
+
+.shadow {
+   @apply absolute w-full h-full top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] -z-10 rounded-xl bg-gradient-conic animate-spin duration-1000 blur-lg opacity-50;
+   background-image: conic-gradient(from var(--angle), #aff, transparent, transparent, transparent, #aff);
+   animation: spin2 5s linear infinite;
+}
+
+@keyframes spin2 {
+   from {
+      --angle: 0deg
+   }
+
+   to {
+      --angle: 360deg
+   }
+}
+
+button {
+   @apply bg-white min-w-56 text-black text-lg py-1.5 px-3 rounded-lg font-medium hover:scale-105 transition-transform select-none;
+}
+.button-secondary {
+   @apply bg-[#383d41] text-white/80 border-white/10;
+}
+.button-terciary {
+   @apply bg-transparent text-white/80 text-lg border-[3px] border-white/10;
+}
