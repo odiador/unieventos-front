@@ -10,7 +10,7 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const validateMail = async () => {
         setLoading(true);
-        await fetch(`${process.env.BACKEND_URL}/api/auth/validateMail?mail=${encodeURIComponent(email)}`,
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/validateMail?mail=${encodeURIComponent(email)}`,
             {
                 method: "GET",
                 headers: {

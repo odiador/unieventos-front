@@ -15,7 +15,7 @@ function Login() {
     const [loading, setLoading] = useState(false);
     const login = async () => {
         setLoading(true);
-        await fetch(`http://localhost:8080/api/auth/login`,
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`,
             {
                 method: "POST",
                 headers: {
