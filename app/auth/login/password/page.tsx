@@ -65,5 +65,7 @@ function Login() {
         </>);
 }
 export default function LoginWPassword() {
-    return <Suspense children={<Login />} />
+    return <Suspense>
+        <Login />
+    </Suspense>
 }

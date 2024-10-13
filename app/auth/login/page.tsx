@@ -19,5 +19,7 @@ function Login() {
 }
 
 export default function LoginComponent() {
-    return <Suspense children={<Login />} />
+    return <Suspense>
+        <Login />
+    </Suspense>
 }
