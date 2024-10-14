@@ -23,9 +23,7 @@ function Login() {
         const response = await login(mail, password);
         if (response.status === 200) {
             setLoading(false);
-            console.log(response.data);
-            
-            openModal(response.data.toString())
+            openModal(response.data.message)
         } else {
             switch (response.status) {
                 case 400:
