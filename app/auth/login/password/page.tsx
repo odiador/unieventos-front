@@ -1,68 +1,76 @@
 "use client";
+import { login } from "@/api/utils/api";
 import { IconLoader } from "@tabler/icons-react";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
 
 function Login() {
     const searchParams = useSearchParams();
+    const mailString = searchParams.get("mail");
     const router = useRouter();
-    const mail = searchParams.get("mail");
-    if (!mail)
-        redirect("/auth")
-    const [password, setPassword] = useState("");
-    const [passwordMessage, setPasswordMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const login = async () => {
-        setLoading(true);
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email: mail, password })
-            }
-        ).then(e => {
-            setLoading(false);
-            if (e.ok) {
-                alert("logged in")
-            } else {
-                e.json().then(json => {
-                    if (e.status == 400) {
-                        if (json.message) {
-                            console.log(json.message);
+    if (!mailString || mailString === "")
+        router.back()
 
-                        } else {
-                            json.errors.forEach((e: { field: string; message: string }) => {
-                                if (e.field == "password") {
-                                    setPasswordMessage(e.message)
-                                }
-                            });
+    const [password, setPassword] = useState("");
+
+    const [mail, setMail] = useState(mailString?.toString() || "");
+
+    const [passwordMessage, setPasswordMessage] = useState("");
+    const [mailMessage, setMailMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+    const doLogin = async () => {
+        setLoading(true);
+        const response = await login(mail, password);
+        if (response.status === 200) {
+            console.log(response.data);
+            setLoading(false);
+            alert("loggedIn")
+        } else {
+            switch (response.status) {
+                case 400:
+                    const found = { password: false, mail: false }
+                    response.data.errors.forEach((e: { field: string; message: string }) => {
+                        if (e.field === "password") {
+                            setPasswordMessage(e.message)
+                            found.password = true;
+                        } else if (e.field === "email") {
+                            setMailMessage(e.message)
+                            found.mail = true;
                         }
-                    } else {
-                        console.log(json.message);
-                        setPasswordMessage("")
-                    }
-                })
+                    });
+                    if (found.mail == false) setMailMessage("")
+                    if (found.password == false) setPasswordMessage("")
+
+                    break;
+                default:
+                    console.log(response.data.message);
+                    setMailMessage("")
+                    setPasswordMessage("")
+                    break;
             }
-        });
+            setLoading(false);
+        }
     }
     return (
         <>
-            <h1 className="text-center text-2xl font-semibold">Bienvenido a Unieventos</h1>
-            <p className="text-left text-sm opacity-80 font-normal">Inicia Sesión</p>
-            <input type="email" defaultValue={mail} className="hidden" />
+            <h1 className="text-left text-2xl font-semibold">Inicia Sesión</h1>
+            <p className="text-left text-sm opacity-80 font-normal">Ingresa tu contraseña</p>
+            <input type="email"
+                style={{ display: !mailMessage || mailMessage === "" ? "none" : "block" }}
+                value={mail}
+                onChange={(e) => setMail(e.target.value)} />
+            {mailMessage && <p className="validator-message">{mailMessage}</p>}
             <input type="password"
-                className="bg-[#131517]/30 border-2 w-full border-white/10 rounded-md h-10 px-2 text-white selection:bg-cyan-700 focus:outline-none focus:border-white/50 transition-colors"
+                placeholder="Contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <p className="text-red-400 text-sm relative -top-2">{passwordMessage}</p>
-            <button onClick={(() => login())} type="button" className="flex justify-center items-center">
+            <p className="validator-message">{passwordMessage}</p>
+            <button onClick={(() => doLogin())} type="button" className="flex justify-center items-center">
                 {loading && <IconLoader className="animate-spin text-black/50" />}
                 {!loading && "Iniciar Sesión"}</button>
-            <button onClick={(() => router.push(`/auth/login?mail=${encodeURIComponent(mail)}`))} type="button" className="button-secondary">Volver</button>
+            <button onClick={(() => router.back())} type="button" className="button-secondary">Volver</button>
         </>);
 }
 export default function LoginWPassword() {
