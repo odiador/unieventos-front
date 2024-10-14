@@ -1,5 +1,6 @@
 "use client";
 import { validateMail } from "@/api/utils/api";
+import { useModal } from "@/components/modal";
 import { IconLoader } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -10,17 +11,21 @@ export default function Login() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [emailMessage, setEmailMessage] = useState("");
+    const {openModal}=useModal();
     async function validate() {
         setLoading(true);
         const response = await validateMail(email);
-        console.log(response);
 
         if (response.status === 200) {
             router.push(`/auth/login?mail=${encodeURIComponent(email)}`)
-        } else {
-            let msg = response.data.message.replace("validateMail.arg0: ","")
-            if (msg)
-                setEmailMessage(msg)
+        } else if (response.status === 400) {
+                let msg = response.data.message.replace("validateMail.arg0: ", "")
+                if (msg)
+                    setEmailMessage(msg)
+        } else if (response.status === 404) {
+            openModal("No tienes cuenta mi papu")
+        } else if (response.status === 409) {
+            openModal("Activa tu cuenta bro")
         }
         setLoading(false);
     }
@@ -36,7 +41,7 @@ export default function Login() {
         {emailMessage && <p className="validator-message">{emailMessage}</p>}
         <button onClick={(() => validate())} type="button" className="flex items-center justify-center">
             {loading && <IconLoader className="animate-spin text-black/50" />}
-            {!loading && "Iniciar Sesión"}
+            {!loading && "Continuar"}
         </button>
     </>);
 }
