@@ -1,5 +1,6 @@
 "use client";
 import { login } from "@/api/utils/api";
+import { useModal } from "@/components/modal";
 import { IconLoader } from "@tabler/icons-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
@@ -9,9 +10,6 @@ function Login() {
     const searchParams = useSearchParams();
     const mailString = searchParams.get("mail");
     const router = useRouter();
-    if (!mailString || mailString === "")
-        router.back()
-
     const [password, setPassword] = useState("");
 
     const [mail, setMail] = useState(mailString?.toString() || "");
@@ -19,13 +17,15 @@ function Login() {
     const [passwordMessage, setPasswordMessage] = useState("");
     const [mailMessage, setMailMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const {openModal} =useModal();
     const doLogin = async () => {
         setLoading(true);
         const response = await login(mail, password);
         if (response.status === 200) {
-            console.log(response.data);
             setLoading(false);
-            alert("loggedIn")
+            console.log(response.data);
+            
+            openModal(response.data.toString())
         } else {
             switch (response.status) {
                 case 400:
@@ -44,7 +44,7 @@ function Login() {
 
                     break;
                 default:
-                    console.log(response.data.message);
+                    openModal(response.data.message)
                     setMailMessage("")
                     setPasswordMessage("")
                     break;
@@ -55,12 +55,16 @@ function Login() {
     return (
         <>
             <h1 className="text-left text-2xl font-semibold">Inicia Sesión</h1>
-            <p className="text-left text-sm opacity-80 font-normal">Ingresa tu contraseña</p>
+            <p className="text-left text-sm opacity-80 font-normal">Ingresa tu correo electrónico</p>
             <input type="email"
-                style={{ display: !mailMessage || mailMessage === "" ? "none" : "block" }}
                 value={mail}
-                onChange={(e) => setMail(e.target.value)} />
+                onChange={(e) => {
+                    setMail(e.target.value)
+                    router.replace(`/auth/login/password?mail=${encodeURIComponent(e.target.value)}`, undefined);
+ 
+                    }} />
             {mailMessage && <p className="validator-message">{mailMessage}</p>}
+            <p className="text-left text-sm opacity-80 font-normal">Ingresa tu contraseña</p>
             <input type="password"
                 placeholder="Contraseña"
                 value={password}
