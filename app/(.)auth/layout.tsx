@@ -8,16 +8,6 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return (
-        <ModalLayout>{children}</ModalLayout>
-    );
-}
-
-export function ModalLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
     return <ModalProvider>
         <div className="absolute flex items-center justify-center flex-col gap-2 top-0 left-0 z-10 w-full h-full bg-black/50">
             <motion.div
