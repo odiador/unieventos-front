@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
 
-export function Password() {
+function Password() {
     const searchParams = useSearchParams();
     const mailString = searchParams.get("mail");
     const router = useRouter();
