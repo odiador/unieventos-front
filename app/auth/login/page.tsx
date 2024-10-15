@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 
 
-export function Login() {
+function Login() {
     const router = useRouter();
     const {openModal} = useModal();
     return (
@@ -15,6 +15,7 @@ export function Login() {
             <button onClick={(() => router.back())} type="button" className="button-terciary">Volver</button>
         </>);
 }
+export { Login };
 
 export default function LoginComponent() {
     return <Suspense>
