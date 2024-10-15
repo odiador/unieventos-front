@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { IconHeart } from "@tabler/icons-react";
+import MadeBy from "@/components/watermark";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,12 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={`${inter.className} flex flex-col`}  >
+      <body className={`${inter.className} flex flex-col max-h-screen h-screen gap-1`}  >
         <div className="fixed -z-50 bg-[#1d2228] pointer-events-none left-0 top-0 w-screen h-screen" />
-        {children}
-        <div className="fixed bottom-0 w-full text-white/10 h-10 justify-center flex items-center text-center">
-          <Link href={"https://github.com/odiador"} className="hover:scale-105 transition-all hover:text-white/100 cursor-pointer h-full px-4 content-center">Made with ❤️ by <strong>Amador</strong></Link>
-        </div>
+        <div className="grow">{children}</div>
+        <MadeBy />
       </body>
     </html>
   );

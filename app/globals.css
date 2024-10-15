@@ -37,15 +37,23 @@ body {
 button {
    @apply bg-white min-w-56 text-black text-lg py-1.5 px-3 rounded-lg font-medium hover:scale-105 transition-transform select-none;
 }
+
 .button-secondary {
    @apply bg-[#383d41] text-white/80 border-white/10;
 }
+
 .button-terciary {
    @apply bg-transparent text-white/80 text-lg border-[3px] border-white/10;
 }
+
 input {
    @apply bg-[#131517]/30 border-2 w-full border-white/10 rounded-md h-10 px-2 text-white selection:text-cyan-200 selection:bg-neutral-700 focus:outline-none focus:border-white/50 transition-colors;
 }
-.validator-message{
+
+.validator-message {
    @apply text-red-400 text-sm relative -top-2;
+}
+
+.bg-animate {
+   transition: background-image 0.5s linear;
 }
