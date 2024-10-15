@@ -2,7 +2,7 @@
 
 import { Login } from "@/components/login";
 import { useModal } from "@/components/modal";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
     const router = useRouter();
