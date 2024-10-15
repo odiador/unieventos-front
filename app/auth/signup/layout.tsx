@@ -11,6 +11,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <form className="gap-2 flex flex-col min-w-96">{children}</form>
+    <form className="gap-2 flex flex-col w-full">{children}</form>
   );
 }

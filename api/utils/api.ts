@@ -31,5 +31,15 @@ function login(email: string, password: string) {
             body: JSON.stringify({ email, password })
         })
 }
+function signup(values: { email: string; password: string; name: string; cedula: string; phone: string; adress: string; }) {
+    return executeRequest("/api/auth/create",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values)
+        })
+}
 
-export { validateMail, login };
+export { validateMail, login, signup };

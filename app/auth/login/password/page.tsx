@@ -7,12 +7,10 @@ import { Suspense, useState } from "react";
 
 
 function Password() {
-    const searchParams = useSearchParams();
-    const mailString = searchParams.get("mail");
     const router = useRouter();
     const [password, setPassword] = useState("");
 
-    const [mail, setMail] = useState(mailString?.toString() || "");
+    const [mail, setMail] = useState("");
 
     const [passwordMessage, setPasswordMessage] = useState("");
     const [mailMessage, setMailMessage] = useState("");
@@ -61,11 +59,7 @@ function Password() {
             <p className="text-left text-sm opacity-80 font-normal">Ingresa tu correo electrónico</p>
             <input type="email"
                 value={mail}
-                onChange={(e) => {
-                    setMail(e.target.value)
-                    router.replace(`/auth/login/password?mail=${encodeURIComponent(e.target.value)}`, undefined);
-
-                }} />
+                onChange={(e) => setMail(e.target.value)} />
             {mailMessage && <p className="validator-message">{mailMessage}</p>}
             <p className="text-left text-sm opacity-80 font-normal">Ingresa tu contraseña</p>
             <input type="password"
