@@ -1,7 +1,7 @@
 
-function Login({ usePassword, useCode, back, }: { usePassword: Function, useCode: Function, back: Function }) {
-    const goToPassword = () => usePassword();
-    const goToCode = () => useCode();
+function Login({ onPassword, onCode, back, }: { onPassword: Function, onCode: Function, back: Function }) {
+    const goToPassword = () => onPassword();
+    const goToCode = () => onCode();
     const goBack = () => back();
     return (
         <>

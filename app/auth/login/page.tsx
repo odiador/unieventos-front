@@ -9,6 +9,6 @@ export default function LoginComponent() {
     const router = useRouter();
     const { openModal } = useModal();
     return <Suspense>
-        <Login back={() => router.back()} useCode={() => openModal("Not yet implemented")} usePassword={() => router.push("/auth/login/password")} />
+        <Login back={() => router.back()} onCode={() => openModal("Not yet implemented")} onPassword={() => router.push("/auth/login/password")} />
     </Suspense>
 }

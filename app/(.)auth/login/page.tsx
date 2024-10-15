@@ -7,5 +7,5 @@ import { useRouter } from "next/router";
 export default function Page() {
     const router = useRouter();
     const { openModal } = useModal();
-    return <Login back={() => router.back()} useCode={() => openModal("Not yet implemented")} usePassword={() => router.push("/auth/login/password")} />
+    return <Login back={() => router.back()} onCode={() => openModal("Not yet implemented")} onPassword={() => router.push("/auth/login/password")} />
 }
