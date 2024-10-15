@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Header = () => {
     return (
-        <header className="flex flex-col justify-center items-stretch sm:flex-row w-full px-4 py-2 gap-2">
+        <header className="sticky top-0 bg-black/10 z-50 backdrop-blur-lg flex flex-col justify-center items-stretch sm:flex-row w-full px-4 py-2 gap-2">
             <div className="grow">
                 <Link href={"/"} className="px-2 text-2xl font-extrabold text-white/70 select-none">{"amaTickets"}</Link>
             </div>
