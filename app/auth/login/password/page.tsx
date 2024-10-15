@@ -2,7 +2,7 @@
 import { login } from "@/api/utils/api";
 import { useModal } from "@/components/modal";
 import { IconLoader } from "@tabler/icons-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 
 
