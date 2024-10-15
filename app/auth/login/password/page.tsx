@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
 
-function Login() {
+export function Password() {
     const searchParams = useSearchParams();
     const mailString = searchParams.get("mail");
     const router = useRouter();
@@ -17,7 +17,7 @@ function Login() {
     const [passwordMessage, setPasswordMessage] = useState("");
     const [mailMessage, setMailMessage] = useState("");
     const [loading, setLoading] = useState(false);
-    const {openModal} =useModal();
+    const { openModal } = useModal();
     const doLogin = async () => {
         setLoading(true);
         const response = await login(mail, password);
@@ -28,23 +28,28 @@ function Login() {
             switch (response.status) {
                 case 400:
                     const found = { password: false, mail: false }
-                    response.data.errors.forEach((e: { field: string; message: string }) => {
-                        if (e.field === "password") {
-                            setPasswordMessage(e.message)
-                            found.password = true;
-                        } else if (e.field === "email") {
-                            setMailMessage(e.message)
-                            found.mail = true;
-                        }
-                    });
+                    if (response.data.errors)
+                        response.data.errors.forEach((e: { field: string; message: string }) => {
+                            if (e.field === "password") {
+                                setPasswordMessage(e.message)
+                                found.password = true;
+                            } else if (e.field === "email") {
+                                setMailMessage(e.message)
+                                found.mail = true;
+                            }
+                        });
                     if (found.mail == false) setMailMessage("")
                     if (found.password == false) setPasswordMessage("")
 
                     break;
                 default:
-                    openModal(response.data.message)
-                    setMailMessage("")
-                    setPasswordMessage("")
+                    if (response.data && response.data.message) {
+                        openModal(response.data.message)
+                        setMailMessage("")
+                        setPasswordMessage("")
+                    } else {
+                        openModal("Internal server error: " + response.status)
+                    }
                     break;
             }
             setLoading(false);
@@ -59,8 +64,8 @@ function Login() {
                 onChange={(e) => {
                     setMail(e.target.value)
                     router.replace(`/auth/login/password?mail=${encodeURIComponent(e.target.value)}`, undefined);
- 
-                    }} />
+
+                }} />
             {mailMessage && <p className="validator-message">{mailMessage}</p>}
             <p className="text-left text-sm opacity-80 font-normal">Ingresa tu contraseña</p>
             <input type="password"
@@ -77,6 +82,6 @@ function Login() {
 }
 export default function LoginWPassword() {
     return <Suspense>
-        <Login />
+        <Password />
     </Suspense>
 }
