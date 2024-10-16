@@ -31,6 +31,7 @@ function Login() {
         const response = await signup(values);
         if (response.status == 201) {
             openModal(response.data.message)
+            router.push(`/auth/activate?email=${encodeURIComponent(email)}`)
         } else if (response.status === 400) {
             const found = { email: false, password: false, name: false, cedula: false, phone: false, city: false, address: false };
             if (response.data && response.data.errors) {

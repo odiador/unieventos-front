@@ -31,6 +31,30 @@ function login(email: string, password: string) {
             body: JSON.stringify({ email, password })
         })
 }
+
+
+function activate(values: { email: string; code: string; }) {
+    return executeRequest("/api/auth/activation/activate",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values)
+        })
+}
+function sendActivation(email: string) {
+    return executeRequest(`/api/auth/activation/send?email=${encodeURIComponent(email)}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include',
+        })
+}
+
+
 function signup(values: { email: string; password: string; name: string; cedula: string; phone: string; adress: string; }) {
     return executeRequest("/api/auth/create",
         {
@@ -42,4 +66,4 @@ function signup(values: { email: string; password: string; name: string; cedula:
         })
 }
 
-export { validateMail, login, signup };
+export { validateMail, login, signup, activate, sendActivation };

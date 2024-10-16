@@ -40,6 +40,9 @@ function Password() {
                     if (found.password == false) setPasswordMessage("")
 
                     break;
+                case 409:
+                    router.push(`/auth/activate?email=${encodeURIComponent(mail)}`)
+                    break;
                 default:
                     if (response.data && response.data.message) {
                         openModal(response.data.message)
