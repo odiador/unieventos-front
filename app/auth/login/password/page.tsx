@@ -1,9 +1,7 @@
 "use client";
-import { login } from "@/api/utils/api";
-import { LoginResponseDTO } from "@/api/utils/schemas";
+import { useAuthContext } from "@/api/utils/auth";
 import { useModal } from "@/components/modal";
 import { IconLoader } from "@tabler/icons-react";
-import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
 
@@ -14,6 +12,7 @@ function Password() {
     const [mailMessage, setMailMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const { openModal } = useModal();
+    const { account, signin } = useAuthContext();
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setLoading(true);
@@ -21,14 +20,12 @@ function Password() {
         const email = formdata.get("email");
 
         const password = formdata.get("password");
-        
-        const response = await login(JSON.stringify({  email, password }));
+        if (!email || !password)
+            return;
+        const response = await signin(email.toString(), password.toString())
         if (response.status === 200) {
             setLoading(false);
-            const data = response.data.response as LoginResponseDTO;
-            const jwt = "Bearer " + data.token;
-            setCookie("jwt", jwt)
-            router.push("/dashboard")
+            router.push("/dashboard");
         } else {
             switch (response.status) {
                 case 400:
@@ -38,7 +35,7 @@ function Password() {
                             if (!password && e.field === "password") {
                                 setPasswordMessage(e.message)
                                 found.password = true;
-                            } 
+                            }
                             if (!email && e.field === "email") {
                                 setMailMessage(e.message)
                                 found.email = true;

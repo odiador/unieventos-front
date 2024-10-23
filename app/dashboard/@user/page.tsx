@@ -1,5 +1,5 @@
 const User = () => {
-    return <div>Dashboard Usuario</div>
+    return <div>No tienes permiso!</div>
 }
 
 export default User;

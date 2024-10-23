@@ -20,8 +20,8 @@ const validateMail = (email: string) => {
         }
     )
 }
-const checkUserRole = (token: string) => {
-    return executeRequest(`/api/auth/checkRole`,
+const checkUser = (token: string) => {
+    return executeRequest(`/api/auth/checkUser`,
         {
             method: "POST",
             headers: {
@@ -78,4 +78,4 @@ function signup(values: { email: string; password: string; name: string; cedula:
         })
 }
 
-export { validateMail, login, signup, activate, sendActivation, checkUserRole };
+export { validateMail, login, signup, activate, sendActivation, checkUser };
