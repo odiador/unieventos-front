@@ -20,15 +20,27 @@ const validateMail = (email: string) => {
         }
     )
 }
+const checkUserRole = (token: string) => {
+    return executeRequest(`/api/auth/checkRole`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            credentials: 'include',
+        }
+    )
+}
 
-function login(email: string, password: string) {
+function login(data: string) {
     return executeRequest("/api/auth/login",
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email, password })
+            body: data
         })
 }
 
@@ -66,4 +78,4 @@ function signup(values: { email: string; password: string; name: string; cedula:
         })
 }
 
-export { validateMail, login, signup, activate, sendActivation };
+export { validateMail, login, signup, activate, sendActivation, checkUserRole };

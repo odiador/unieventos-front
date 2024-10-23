@@ -1,47 +1,55 @@
 "use client";
 import { login } from "@/api/utils/api";
+import { LoginResponseDTO } from "@/api/utils/schemas";
 import { useModal } from "@/components/modal";
 import { IconLoader } from "@tabler/icons-react";
+import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 
 
 function Password() {
     const router = useRouter();
-    const [password, setPassword] = useState("");
-
-    const [mail, setMail] = useState("");
-
     const [passwordMessage, setPasswordMessage] = useState("");
     const [mailMessage, setMailMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const { openModal } = useModal();
-    const doLogin = async () => {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
         setLoading(true);
-        const response = await login(mail, password);
+        const formdata = new FormData(e.currentTarget);
+        const email = formdata.get("email");
+
+        const password = formdata.get("password");
+        
+        const response = await login(JSON.stringify({  email, password }));
         if (response.status === 200) {
             setLoading(false);
-            openModal(response.data.message)
+            const data = response.data.response as LoginResponseDTO;
+            const jwt = "Bearer " + data.token;
+            setCookie("jwt", jwt)
+            router.push("/dashboard")
         } else {
             switch (response.status) {
                 case 400:
-                    const found = { password: false, mail: false }
+                    const found = { password: false, email: false }
                     if (response.data.errors)
                         response.data.errors.forEach((e: { field: string; message: string }) => {
-                            if (e.field === "password") {
+                            if (!password && e.field === "password") {
                                 setPasswordMessage(e.message)
                                 found.password = true;
-                            } else if (e.field === "email") {
+                            } 
+                            if (!email && e.field === "email") {
                                 setMailMessage(e.message)
-                                found.mail = true;
+                                found.email = true;
                             }
                         });
-                    if (found.mail == false) setMailMessage("")
+                    if (found.email == false) setMailMessage("")
                     if (found.password == false) setPasswordMessage("")
 
                     break;
                 case 409:
-                    router.push(`/auth/activate?email=${encodeURIComponent(mail)}`)
+                    router.push(`/auth/activate?email=${encodeURIComponent(email?.toString() || "")}`)
                     break;
                 default:
                     if (response.data && response.data.message) {
@@ -57,25 +65,32 @@ function Password() {
         }
     }
     return (
-        <>
+        <form className="gap-2 flex flex-col w-full" onSubmit={handleSubmit}>
             <h1 className="text-left text-2xl font-semibold">Inicia Sesión</h1>
             <p className="text-left text-sm opacity-80 font-normal">Ingresa tu correo electrónico</p>
-            <input type="email"
-                value={mail}
-                onChange={(e) => setMail(e.target.value)} />
+            <input
+                name="email"
+                id="email"
+                placeholder="Correo electrónico"
+                type="email"
+                required
+            />
             {mailMessage && <p className="validator-message">{mailMessage}</p>}
             <p className="text-left text-sm opacity-80 font-normal">Ingresa tu contraseña</p>
-            <input type="password"
+            <input
+                id="password"
+                name="password"
+                type="password"
                 placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                required
             />
             <p className="validator-message">{passwordMessage}</p>
-            <button onClick={(() => doLogin())} type="button" className="flex justify-center items-center">
+            <button type="submit" className="flex justify-center items-center">
                 {loading && <IconLoader className="animate-spin text-black/50" />}
                 {!loading && "Iniciar Sesión"}</button>
             <button onClick={(() => router.back())} type="button" className="button-secondary">Volver</button>
-        </>);
+        </form>
+    );
 }
 export default function LoginWPassword() {
     return <Suspense>

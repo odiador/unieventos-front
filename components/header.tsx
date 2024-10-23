@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 
 const Header = () => {
@@ -8,6 +9,7 @@ const Header = () => {
             </div>
             <Link href={"/auth/login"} className="button">Inicia Sesión</Link>
             <Link href={"/auth/signup"} className="button button-secondary">Regístrate</Link>
+            
         </header>
     );
 }

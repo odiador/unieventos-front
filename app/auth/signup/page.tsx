@@ -86,16 +86,6 @@ function Login() {
                     <p className="validator-message">{emailValidation}</p>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <p className="text-sm w-full">Ingresa tu contraseña</p>
-                    <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <p className="validator-message">{passwordValidation}</p>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <p className="text-sm w-full">Confirma tu contraseña</p>
-                    <input type="password" placeholder="Contraseña" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} />
-                    <p className="validator-message">{password === passwordConfirmation ? "" : "Las contraseñas no coinciden"}</p>
-                </div>
-                <div className="flex flex-col gap-2">
                     <p className="text-sm">Ingresa tu Nombre</p>
                     <input placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
                     <p className="validator-message">{nameValidation}</p>
@@ -119,6 +109,16 @@ function Login() {
                     <p className="text-sm">Ingresa tu dirección de residencia</p>
                     <input placeholder="Dirección" value={address} onChange={(e) => setAddress(e.target.value)} />
                     <p className="validator-message">{addressValidation}</p>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <p className="text-sm w-full">Ingresa tu contraseña</p>
+                    <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <p className="validator-message">{passwordValidation}</p>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <p className="text-sm w-full">Confirma tu contraseña</p>
+                    <input type="password" placeholder="Contraseña" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} />
+                    <p className="validator-message">{password === passwordConfirmation ? "" : "Las contraseñas no coinciden"}</p>
                 </div>
             </div>
             <button onClick={((e) => {
