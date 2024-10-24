@@ -1,12 +1,20 @@
 "use client";
 
+import { useAuthContext } from "@/api/utils/auth";
 import { ModalProvider } from "@/components/modal";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const router = useRouter();
+  const { loggedIn } = useAuthContext();
+  useEffect(() => {
+    if (loggedIn()) router.push("/");
+  }, [])
   return (
     <ModalProvider>
       <main className="relative h-full flex items-center justify-center py-16 px-4">

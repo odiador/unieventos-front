@@ -1,10 +1,12 @@
 "use client";
 import { useAuthContext } from "@/api/utils/auth";
 import Link from "next/link";
+import { useEffect } from "react";
 
 const Header = () => {
     const { account, signout } = useAuthContext();
-
+    const { updateRole } = useAuthContext();
+    useEffect(() => { updateRole() }, [])
     return (
         <header className="sticky top-0 bg-black/10 z-50 backdrop-blur-lg flex flex-col justify-center items-stretch sm:flex-row w-full px-4 py-2 gap-2">
             <div className="grow">

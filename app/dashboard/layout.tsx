@@ -2,7 +2,8 @@
 import { useAuthContext } from '@/api/utils/auth';
 import { IconLoader } from '@tabler/icons-react';
 import { motion, useAnimation } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { redirect } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Layout({
   user,
@@ -12,15 +13,14 @@ export default function Layout({
   admin: React.ReactNode
 }) {
   const { account, loggedIn, updateRole } = useAuthContext();
-  const [loading, setLoading] = useState(true);
   const overlay = useAnimation();
   useEffect(() => {
     if (loggedIn()) {
-      updateRole().then((a) => {
+      updateRole().then(() => {
         overlay.start("hidden");
       })
     } else {
-      overlay.start("hidden");
+      redirect("/")
     }
   }, []);
   return <div className='relative flex items-center justify-center h-full'>

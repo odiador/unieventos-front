@@ -30,19 +30,17 @@ const useAuthContext = () => {
 const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const [account, setAccount] = useState<{ role: "CLIENT" | "ADMINISTRATOR", email: string, name: string } | null>(null);
+  const [waiting, setWaiting] = useState(false);
 
   const updateRole = async () => {
-    console.log("hola");
     if (!loggedIn())
       return null;
     const response = await checkUserCookie(getCookie("jwt"));
-    console.log(response?.data);
     if (response?.status != 200) {
       signout();
       return null;
     }
     const data = response.data.response as CheckUserDTO;
-    console.log(data)
     setAccount(data);
     return data;
   }

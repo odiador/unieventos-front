@@ -12,7 +12,7 @@ function Password() {
     const [mailMessage, setMailMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const { openModal } = useModal();
-    const { account, signin } = useAuthContext();
+    const { signin } = useAuthContext();
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setLoading(true);
