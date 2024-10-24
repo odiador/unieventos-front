@@ -11,5 +11,37 @@ interface CheckUserDTO {
     role: "CLIENT" | "ADMINISTRATOR",
     email: string,
 }
+interface FindEventDTO {
+    name: string,
+    eventImage: string,
+    localityImage: string,
+    city: string,
+    description: string,
+    address: string,
+    startTime: string,
+    endTime: string
+    localities: FindEventLocalityDTO[],
+    tags: EventTagDTO[],
+    status: string,
+    type: string
+}
 
-export type { LoginResponseDTO, CheckUserDTO };
+interface FindEventLocalityDTO {
+    name: string,
+    price: number,
+    ticketsSold: number,
+    maxCapability: number
+}
+
+interface EventTagDTO {
+    name: string,
+    color: string,
+    textColor: string
+}
+
+interface ResponseDTO<T> {
+    message: string,
+    response: T | null
+}
+
+export type { LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO };

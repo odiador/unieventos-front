@@ -1,11 +1,14 @@
-const executeRequest = async (uri: string, options: RequestInit) => {
+import { CheckUserDTO, FindEventDTO, ResponseDTO } from "./schemas";
+const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${uri}`, options);
         data = await res.json();
+        data = data as ResponseDTO<T>;
         return { status: res.status, data };
     } catch (e) {
-        return { status: 500, data };
+        if (!data) data = { message: "Internal server Error " + e }
+        return { status: 500, data: { message: data.message, response: null } };
     }
 }
 
@@ -21,7 +24,7 @@ const validateMail = (email: string) => {
     )
 }
 const checkUser = (token: string) => {
-    return executeRequest(`/api/auth/checkUser`,
+    return executeRequest<CheckUserDTO>(`/api/auth/checkUser`,
         {
             method: "POST",
             headers: {
@@ -41,6 +44,16 @@ function login(data: string) {
                 "Content-Type": "application/json",
             },
             body: data
+        })
+}
+function findEvent(data: { idCalendar: string, name: string }) {
+    return executeRequest<FindEventDTO>("/api/events/find",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
         })
 }
 
@@ -78,4 +91,4 @@ function signup(values: { email: string; password: string; name: string; cedula:
         })
 }
 
-export { validateMail, login, signup, activate, sendActivation, checkUser };
+export { validateMail, login, signup, activate, sendActivation, checkUser, findEvent };
