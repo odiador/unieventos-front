@@ -26,6 +26,22 @@ interface FindEventDTO {
     type: string
 }
 
+interface CalendarDTO {
+    id: string,
+    name: string,
+    description: string,
+    events: FindEventDTO[],
+    image: string,
+    bannerImage: string,
+}
+interface CalendarOnlyDTO {
+    id: string,
+    name: string,
+    description: string,
+    image: string,
+    bannerImage: string,
+}
+
 interface FindEventLocalityDTO {
     name: string,
     price: number,
@@ -44,4 +60,4 @@ interface ResponseDTO<T> {
     response: T | null
 }
 
-export type { LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO };
+export type { LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO, CalendarDTO, CalendarOnlyDTO };

@@ -1,4 +1,4 @@
-import { CheckUserDTO, FindEventDTO, ResponseDTO } from "./schemas";
+import { CalendarDTO, CalendarOnlyDTO, CheckUserDTO, FindEventDTO, ResponseDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -57,6 +57,38 @@ function findEvent(data: { idCalendar: string, name: string }) {
         })
 }
 
+function listCalendars(data: { page: number, size: number }) {
+    return executeRequest<CalendarOnlyDTO[]>("/api/calendars/findByPage",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+}
+
+function findCalendarOnly(id: string) {
+    return executeRequest<CalendarOnlyDTO>("/api/calendars/findById",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: id
+        })
+}
+
+function findEvents(data: { id: string, size: number, page: number }) {
+    return executeRequest<FindEventDTO[]>("/api/events/list",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+}
 
 function activate(values: { email: string; code: string; }) {
     return executeRequest("/api/auth/activation/activate",
@@ -91,4 +123,4 @@ function signup(values: { email: string; password: string; name: string; cedula:
         })
 }
 
-export { validateMail, login, signup, activate, sendActivation, checkUser, findEvent };
+export { validateMail, login, signup, activate, sendActivation, checkUser, findEvent, listCalendars, findCalendarOnly, findEvents };
