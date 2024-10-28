@@ -51,16 +51,16 @@ const EventPage = () => {
                             n = n - 1;
                         setPage(n);
                     }}
-                    className="button-icon"
+                        className="button-icon"
                     >
-                        <IconArrowLeft/>
+                        <IconArrowLeft />
                     </button>
                     <button onClick={() => {
                         setPage((pg) => pg + 1);
                     }}
-                    className="button-icon"
+                        className="button-icon"
                     >
-                        <IconArrowRight/>
+                        <IconArrowRight />
                     </button>
                 </div>
                 <div className="flex flex-col gap-2 ">
@@ -71,7 +71,7 @@ const EventPage = () => {
                                     <div className="flex flex-1 flex-col gap-4">
                                         <label className="text-2xl font-bold">{c.name}</label>
                                         <label className="w-3/4">{c.description}</label>
-                                        <button className="w-fit button-secondary">Ver más <IconArrowRight /></button>
+                                        <button className="w-fit button-secondary"><div className="flex items-center justify-center">Ver más <IconArrowRight /></div></button>
                                     </div>
                                     {c.image ? <Image width={1024} height={1024} className="h-24 w-fit rounded-lg" src={c.image} alt={`image of ${c.image}`} /> : <label>{"No hay imagen"}</label>}
                                 </Link>

@@ -35,7 +35,7 @@ body {
 }
 
 button, .button {
-   @apply bg-white min-w-36 text-black text-lg py-1.5 px-3 rounded-lg font-medium hover:scale-105 transition-transform flex items-center justify-center select-none text-center;
+   @apply bg-white min-w-36 text-black text-lg py-1.5 px-3 rounded-lg font-medium hover:scale-105 transition-transform align-middle select-none text-center;
 }
 .button-icon {
    @apply min-w-fit w-fit h-fit min-h-fit rounded-full p-2;
