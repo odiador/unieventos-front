@@ -31,7 +31,6 @@ const DropZone = ({ croppedImage, aspect, setImageCropped, initialImage }: { cro
         }
     }, [croppedImage])
     useEffect(() => {
-        console.log(initialImage);
         setImageCropped(initialImage)
     }, [])
     return (
@@ -41,7 +40,7 @@ const DropZone = ({ croppedImage, aspect, setImageCropped, initialImage }: { cro
         >
             {img && <div className="top-0 left-0 absolute w-full flex flex-col items-center h-full bg-black/20 z-10">
                 <Fragment>
-                    <button className="z-10" onClick={() => {
+                    <button type="button" className="z-10" onClick={() => {
                         if (croppedAreaPixels) {
                             getCroppedImg(img, croppedAreaPixels, { horizontal: false, vertical: false }).then((img) => {
                                 setImageCropped(img || "")
@@ -49,7 +48,7 @@ const DropZone = ({ croppedImage, aspect, setImageCropped, initialImage }: { cro
                             }).catch(() => { })
                         }
                     }}>Cortar</button>
-                    <Cropper classes={{ containerClassName: "-z-10" }}
+                    <Cropper
                         image={img}
                         aspect={aspect}
                         onCropChange={setCrop}

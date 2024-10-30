@@ -11,6 +11,9 @@ interface CheckUserDTO {
     role: "CLIENT" | "ADMINISTRATOR",
     email: string,
 }
+
+export const eventTypes = ["SPORT", "CONCERT", "CULTURAL", "FASHION", "BEAUTY"];
+
 interface FindEventDTO {
     name: string,
     eventImage: string,
@@ -22,8 +25,8 @@ interface FindEventDTO {
     endTime: string
     localities: FindEventLocalityDTO[],
     tags: EventTagDTO[],
-    status: string,
-    type: string
+    status: "ACTIVE" | "INATIVE" | "DELETED",
+    type: typeof eventTypes[number];
 }
 
 interface CalendarDTO {

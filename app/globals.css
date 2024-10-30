@@ -49,7 +49,7 @@ button, .button {
    @apply bg-transparent text-white/80 text-lg border-[3px] border-white/10;
 }
 
-input {
+input, textarea {
    @apply bg-[#131517]/30 border-2 w-full border-white/10 rounded-md h-10 px-2 text-white selection:text-cyan-200 selection:bg-neutral-700 focus:outline-none focus:border-white/50 transition-colors;
 }
 
@@ -57,6 +57,13 @@ input {
    @apply text-red-400 text-sm relative -top-2;
 }
 
+input[type='color'] {
+   @apply p-0 border-0 m-0 size-8 block;
+ }
+
 .bg-animate {
    transition: background-image 0.5s linear;
+}
+select {
+   @apply bg-[#21262b] outline-none px-4 py-2 w-full rounded-lg;
 }
