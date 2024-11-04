@@ -25,7 +25,7 @@ const Header = () => {
             <div className="grow h-full flex items-center gap-1 sm:justify-normal justify-between">
                 <Link href={"/"} className="px-3 text-2xl font-extrabold text-white/70 hover:text-white transition-colors select-none">{"amaTickets"}</Link>
                 <div className="hidden gap-[2px] shrink sm:flex items-center">
-                    {account && account.role === "ADMINISTRATOR" && <Link key="dashboard" className="px-2 relative text-lg transition-colors font-semibold text-white/50 hover:text-white" href={"/dashboard"}>Dashboard</Link>}
+                    {account && <Link key="home" className="px-2 relative text-lg transition-colors font-semibold text-white/50 hover:text-white" href={"/home"}>Home</Link>}
                     {headerValues.map(values => {
                         return (
                             <div key={values.id}>

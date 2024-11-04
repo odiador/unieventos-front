@@ -67,7 +67,7 @@ const EventPage = () => {
                     {
                         calendars.map(c => {
                             return (
-                                <Link href={`/dashboard/calendars/${c.id}`} className="w-full flex bg-white/5 rounded-lg p-4" key={c.id}>
+                                <Link href={`/home/calendars/${c.id}`} className="w-full flex bg-white/5 rounded-lg p-4" key={c.id}>
                                     <div className="flex flex-1 flex-col gap-4">
                                         <label className="text-2xl font-bold">{c.name}</label>
                                         <label className="w-3/4">{c.description}</label>

@@ -26,7 +26,7 @@ function Password() {
         const response = await signin(email.toString(), password.toString())
         if (response.status === 200) {
             setLoading(false);
-            router.push("/dashboard");
+            router.push("/home");
         } else {
             switch (response.status) {
                 case 400:
