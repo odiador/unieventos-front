@@ -1,5 +1,6 @@
 "use client";
 import { activate, sendActivation } from "@/api/utils/api";
+import { BadRequestFieldsDTO } from "@/api/utils/schemas";
 import { useModal } from "@/components/modal";
 import { IconLoader } from "@tabler/icons-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -31,9 +32,10 @@ function Password() {
         } else {
             switch (response.status) {
                 case 400:
-                    if (response.data.errors) {
+                    const errorData = response.data as unknown as BadRequestFieldsDTO;;
+                    if (errorData.errors) {
                         const found = { code: false, mail: false }
-                        response.data.errors.forEach((e: { field: string; message: string }) => {
+                        errorData.errors.forEach((e: { field: string; message: string }) => {
                             if (!found.code && e.field === "code") {
                                 setCodeMessage(e.message)
                                 found.code = true;

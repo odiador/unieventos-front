@@ -1,5 +1,6 @@
 "use client";
 import { useAuthContext } from "@/api/utils/auth";
+import { BadRequestFieldsDTO } from "@/api/utils/schemas";
 import { useModal } from "@/components/modal";
 import { IconLoader } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
@@ -30,8 +31,9 @@ function Password() {
             switch (response.status) {
                 case 400:
                     const found = { password: false, email: false }
-                    if (response.data.errors)
-                        response.data.errors.forEach((e: { field: string; message: string }) => {
+                    const errorData = response.data as unknown as BadRequestFieldsDTO;;
+                    if (errorData.errors)
+                        errorData.errors.forEach((e: { field: string; message: string }) => {
                             if (!password && e.field === "password") {
                                 setPasswordMessage(e.message)
                                 found.password = true;

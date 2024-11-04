@@ -49,8 +49,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (password) data = { email, password };
     if (code) data = { email, code };
     const response = await login(JSON.stringify(data));
-    if (response.status === 200) {
-      const data = response.data.response as LoginResponseDTO;
+    if (response.status === 200 && response.data.response) {
+      const data = response.data.response;
       setAccount({ email: email, role: data.role, name: data.userData.name });
       setCookie("jwt", "Bearer " + data.token);
     }

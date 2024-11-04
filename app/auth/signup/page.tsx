@@ -1,5 +1,6 @@
 "use client";
 import { signup } from "@/api/utils/api";
+import { BadRequestFieldsDTO } from "@/api/utils/schemas";
 import { useModal } from "@/components/modal";
 import { IconLoader } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
@@ -34,8 +35,10 @@ function Login() {
             router.push(`/auth/activate?email=${encodeURIComponent(email)}`)
         } else if (response.status === 400) {
             const found = { email: false, password: false, name: false, cedula: false, phone: false, city: false, address: false };
-            if (response.data && response.data.errors) {
-                response.data.errors.forEach((e: { field: string; message: string }) => {
+            
+            const errorData = response.data as unknown as BadRequestFieldsDTO | undefined;
+            if (errorData && errorData.errors) {
+                errorData.errors.forEach((e: { field: string; message: string }) => {
                     if (!found.email && e.field === "email") {
                         found.email = true;
                         setEmailValidation(e.message);

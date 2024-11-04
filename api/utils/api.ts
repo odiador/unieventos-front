@@ -1,4 +1,4 @@
-import { CalendarOnlyDTO, CheckUserDTO, EditEventDTO, FindEventDTO, ResponseDTO } from "./schemas";
+import { CalendarOnlyDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, ResponseDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -76,7 +76,7 @@ const checkUser = (token: string) => {
 }
 
 function login(data: string) {
-    return executeRequest("/api/auth/login",
+    return executeRequest<LoginResponseDTO>("/api/auth/login",
         {
             method: "POST",
             headers: {
@@ -130,7 +130,7 @@ function findEvents(data: { id: string, size: number, page: number }) {
 }
 
 function activate(values: { email: string; code: string; }) {
-    return executeRequest("/api/auth/activation/activate",
+    return executeRequest<string>("/api/auth/activation/activate",
         {
             method: "POST",
             headers: {
