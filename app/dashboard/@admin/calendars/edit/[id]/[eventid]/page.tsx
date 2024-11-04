@@ -1,10 +1,13 @@
 "use client";
-import { findEvent } from "@/api/utils/api";
-import { EventTagDTO, eventTypes, FindEventDTO } from "@/api/utils/schemas";
+import { editEvent, findEvent } from "@/api/utils/api";
+import { BadRequestFieldsDTO, EditEventDTO, EventTagDTO, eventTypes, FindEventDTO } from "@/api/utils/schemas";
+import { getImageFromString } from "@/api/utils/util";
 import DropZone from "@/components/dropzone";
 import { useModal } from "@/components/modal";
-import { IconEdit, IconPlus, IconX } from "@tabler/icons-react";
-import { FormEvent, useEffect, useState } from "react";
+import { IconEdit, IconLoader, IconPlus, IconX } from "@tabler/icons-react";
+import { getCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 
 
 const defaultColors = [
@@ -51,54 +54,56 @@ const defaultColors = [
         textColor: "#ffffff"
     }
 ]
-/**
- * 
- * interface FindEventDTO {
-    name: string,
-    eventImage: string,
-    localityImage: string,
-    city: string,
-    description: string,
-    address: string,
-    startTime: string,
-    endTime: string
-    localities: FindEventLocalityDTO[],
-    tags: EventTagDTO[],
-    status: string,
-    type: string
-}
-
- * @param param0 
- * @returns 
- */
 const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
     const [eventFound, setEvent] = useState<FindEventDTO | null>(null);
     const [loading, setLoading] = useState(true);
+    const [buttonLoading, setButtonLoading] = useState(false);
+    const [eventTags, setEventTags] = useState<EventTagDTO[] | undefined>();
     const { openModal, openCustomModal, closeModal } = useModal();
     const [evtImage, setEventImage] = useState<string | undefined>(undefined);
     const [locImage, setLocImage] = useState<string | undefined>(undefined);
+    const router = useRouter();
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        setLoading(true);
-        const formdata = new FormData(e.currentTarget);
-        const name = formdata.get("name")?.toString();
-        const eventImage = evtImage === process.env.NEXT_PUBLIC_DEFAULT_IMAGE ? null : evtImage;
-        const localityImage = locImage === process.env.NEXT_PUBLIC_DEFAULT_IMAGE ? null : locImage;
-        const city = formdata.get("city")?.toString();
-        const description = formdata.get("description")?.toString();
-        const address = formdata.get("address")?.toString();
-        const tags = eventFound?.tags;
-        const eventType = formdata.get("eventType")?.toString();
-        const startTime = formdata.get("startTime")?.toString();
-        const endTime = formdata.get("endTime")?.toString();
-        const status = formdata.get("status")?.toString();
+        if (!buttonLoading) {
+            setButtonLoading(true);
+            const formdata = new FormData(e.currentTarget);
 
-        const newEvent = { name, eventImage, localityImage, city, description, address, tags, type: eventType, startTime, endTime, localities: [], status } as FindEventDTO;
-        alert(JSON.stringify(newEvent));
+            const formStartTime = new Date(formdata.get("startTime")?.toString() || "");
+            const eventStartTime = new Date(eventFound?.startTime || "");
 
-        setLoading(false);
+            const formEndTime = new Date(formdata.get("endTime")?.toString() || "");
+            const eventEndTime = new Date(eventFound?.endTime || "");
 
+            const name = eventFound?.name;
+            const newName = formdata.get("name")?.toString();
+            const eventImage = (evtImage === null || evtImage === process.env.NEXT_PUBLIC_DEFAULT_IMAGE || evtImage === eventFound?.eventImage) ? undefined : await getImageFromString(evtImage || "");
+            const localityImage = (locImage === null || locImage === process.env.NEXT_PUBLIC_DEFAULT_IMAGE || locImage === eventFound?.localityImage) ? undefined : await getImageFromString(locImage || "");
+            const city = formdata.get("city")?.toString();
+            const description = formdata.get("description")?.toString();
+            const address = formdata.get("address")?.toString();
+            const tags = eventTags;
+            const eventType = formdata.get("eventType")?.toString();
+
+            const startTime = formStartTime.toString() === eventStartTime.toString() ? null : formStartTime.toISOString();
+            const endTime = eventEndTime.toString() === formEndTime.toString() ? null : formEndTime.toISOString();
+            const status = formdata.get("status")?.toString();
+            const newEvent = { idCalendar: params.id, name, newName, eventImage: eventImage, localityImage, city, description, address, tags, type: eventType, startTime, endTime, status } as EditEventDTO;
+            console.log(newEvent);
+            const editedEvent = await editEvent(newEvent, getCookie("jwt") || "");
+            console.log(editedEvent.data);
+
+            if (editedEvent.status == 200) {
+                if (newName && name !== newName) {
+                    router.replace(`/dashboard/calendars/edit/${params.id}/${encodeURIComponent(newName)}`)
+                }
+            } else {
+                const errorData = editedEvent.data as unknown as BadRequestFieldsDTO;
+                openModal(JSON.stringify(errorData));
+            }
+            setButtonLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -106,22 +111,24 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
         findEvent({ idCalendar: params.id, name: decodeURIComponent(params.eventid) }).then((response) => {
             if (response.status == 200) {
                 setEvent(response.data.response);
+                setEventTags(response.data.response?.tags);
                 setLoading(false);
             } else {
                 setEvent(null);
+                setEventTags(undefined);
                 openModal(response.data.message)
                 setLoading(false);
             }
         })
     }, []);
 
-    function editTagElement(tag: EventTagDTO, eventFound: FindEventDTO) {
-        const filtered = eventFound.tags.filter(each => each.name !== tag.name);
+    function editTagElement(tag: EventTagDTO, tags: EventTagDTO[], setTags: Dispatch<SetStateAction<EventTagDTO[] | undefined>>) {
+        const filtered = tags.filter(each => each.name !== tag.name);
         return <div className="bg-[#292e34] px-4 py-2 border-2 border-white/5 rounded-lg flex flex-col">
             <div className="flex justify-between text-2xl gap-8 items-center sm:col-span-2">
                 {"Edición de Etiqueta"}
                 <IconX className="cursor-pointer" onClick={() => {
-                    if (tag.name === "") eventFound.tags = eventFound.tags.filter(each => each.name !== "");
+                    if (tag.name === "") setTags(tags.filter(each => each.name !== ""));
                     closeModal()
                 }}></IconX>
             </div>
@@ -209,7 +216,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                 }}>Guardar</button>
                 <button type="button" className="flex-1 button-secondary" onClick={() => {
                     closeModal();
-                    eventFound.tags = eventFound.tags.filter(each => each.name !== tag.name);
+                    setTags(tags.filter(each => each.name !== tag.name));
                 }}>Eliminar</button>
             </div>
         </div>;
@@ -220,7 +227,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
         {!loading && !eventFound && <label>No fue encontrado</label>}
         {loading && <label>Cargando...</label>}
 
-        {!loading && eventFound && (
+        {eventFound && (
             <form className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2 items-center relative" onSubmit={handleSubmit}>
                 <div className="col-span-1 sm:col-span-2 flex items-center gap-2">
                     <input
@@ -273,9 +280,9 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                         placeholder="Hora de fin" />
                 </section>
                 <div className="flex flex-col gap-2 sm:col-span-2 ">
-                    <label>Etiquetas</label>
-                    <div className="flex gap-1 w-full flex-wrap self-end">
-                        {eventFound.tags.map((tag) => {
+                    <label>{eventTags ? "Etiquetas" : "No hay etitquetas"}</label>
+                    {eventTags && <div className="flex gap-1 w-full flex-wrap self-end">
+                        {eventTags.map((tag) => {
                             return (
                                 <label key={tag.name} className="rounded-full text-sm px-4 py-0.5 flex gap-2 items-center" style={{
                                     background: tag.color,
@@ -285,7 +292,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                                     <IconEdit className="cursor-pointer transition-colors" style={{
                                         fill: tag.color,
                                     }} onClick={() => {
-                                        openCustomModal(editTagElement(tag, eventFound))
+                                        openCustomModal(editTagElement(tag, eventTags, setEventTags))
                                     }} />
                                 </label>
                             );
@@ -294,19 +301,19 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                             {"Agregar"}
                             <IconPlus className="cursor-pointer transition-colors " onClick={() => {
                                 const tag = { name: "", color: "#000000", textColor: "#ffffff" }
-                                eventFound.tags.push(tag);
-                                openCustomModal(editTagElement(tag, eventFound))
+                                eventTags.push(tag);
+                                setEventTags(eventTags)
+                                openCustomModal(editTagElement(tag, eventTags, setEventTags))
                             }} />
                         </label>
-                    </div>
+                    </div>}
                 </div>
                 <div className="flex gap-2">
                     <label>Localidades</label>
-                    {/* LOCALIDADES */}
+                    {JSON.stringify(eventFound.localities)}
                 </div>
                 <div className="flex gap-2">
-                    <label></label>
-                    <select name="eventType">
+                    <select name="eventType" defaultValue={eventFound.type}>
                         {eventTypes.map(type => <option key={type}>{type}</option>)}
                     </select>
                     <select name="status">
@@ -323,7 +330,8 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                     <label>Imagen de la Localidad</label>
                     <DropZone aspect={1} croppedImage={locImage} setImageCropped={setLocImage} initialImage={eventFound.localityImage} />
                 </div>
-                <button type="submit">Submit</button>
+                <button type="submit">{buttonLoading ? <IconLoader className="w-full animate-spin text-black/50" /> : "Editar evento"}</button>
+                <button type="button" className="button-secondary" onClick={() => router.back()}>Cancelar</button>
             </form>
         )}
     </>

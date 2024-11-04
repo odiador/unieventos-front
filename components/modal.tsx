@@ -26,6 +26,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const closeModal = () => {
+    setCustomContent(undefined)
     setIsOpen(false);
     setContent('');
   };

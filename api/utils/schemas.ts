@@ -29,6 +29,29 @@ interface FindEventDTO {
     type: typeof eventTypes[number];
 }
 
+interface BadRequestFieldsDTO {
+    status: number,
+    message: string,
+    errors: { field: string, message: string }[]
+}
+
+interface EditEventDTO {
+    idCalendar: string,
+    name: string,
+    newName?: string | null,
+    eventImage?: string | null,
+    localityImage?: string | null,
+    city?: string | null,
+    description?: string | null,
+    address?: string | null,
+    startTime?: string | null,
+    endTime?: string | null,
+    localities?: FindEventLocalityDTO[],
+    tags: EventTagDTO[],
+    status: "ACTIVE" | "INATIVE" | "DELETED",
+    type: typeof eventTypes[number];
+}
+
 interface CalendarDTO {
     id: string,
     name: string,
@@ -43,6 +66,7 @@ interface CalendarOnlyDTO {
     description: string,
     image: string,
     bannerImage: string,
+    tags: EventTagDTO[]
 }
 
 interface FindEventLocalityDTO {
@@ -63,4 +87,4 @@ interface ResponseDTO<T> {
     response: T | null
 }
 
-export type { LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO, CalendarDTO, CalendarOnlyDTO };
+export type { LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO, CalendarDTO, CalendarOnlyDTO, EditEventDTO, BadRequestFieldsDTO };

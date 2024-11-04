@@ -1,4 +1,4 @@
-import { CalendarDTO, CalendarOnlyDTO, CheckUserDTO, FindEventDTO, ResponseDTO } from "./schemas";
+import { CalendarOnlyDTO, CheckUserDTO, EditEventDTO, FindEventDTO, ResponseDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -23,6 +23,45 @@ const validateMail = (email: string) => {
         }
     )
 }
+
+const editEvent = (data: EditEventDTO, token: string) => {
+    const formData = new FormData();
+    formData.append("idCalendar", data.idCalendar);
+    formData.append("name", data.name);
+    if (data.address)
+        formData.append("address", data.address);
+    if (data.newName)
+        formData.append("newName", data.newName);
+    if (data.eventImage) formData.append("eventImage", data.eventImage);
+    if (data.localityImage) formData.append("localityImage", data.localityImage);
+    if (data.city)
+        formData.append("city", data.city);
+    if (data.description)
+        formData.append("description", data.description);
+    if (data.startTime)
+        formData.append("startTime", data.startTime);
+    if (data.endTime)
+        formData.append("endTime", data.endTime);
+    if (data.tags)
+        data.tags.forEach((tag, i) => {
+            formData.append(`tags[${i}].name`, tag.name)
+            formData.append(`tags[${i}].color`, tag.color)
+            formData.append(`tags[${i}].textColor`, tag.textColor)
+        })
+    formData.append("status", data.status);
+    formData.append("type", data.type);
+    return executeRequest<FindEventDTO>(`/api/events/edit`,
+        {
+            method: "POST",
+            headers: {
+                "Authorization": token,
+            },
+            body: formData,
+            credentials: 'include',
+        }
+    )
+}
+
 const checkUser = (token: string) => {
     return executeRequest<CheckUserDTO>(`/api/auth/checkUser`,
         {
@@ -123,4 +162,4 @@ function signup(values: { email: string; password: string; name: string; cedula:
         })
 }
 
-export { validateMail, login, signup, activate, sendActivation, checkUser, findEvent, listCalendars, findCalendarOnly, findEvents };
+export { activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation, signup, validateMail, editEvent };
