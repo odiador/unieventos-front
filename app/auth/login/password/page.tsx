@@ -3,7 +3,7 @@ import { useAuthContext } from "@/api/utils/auth";
 import { BadRequestFieldsDTO } from "@/api/utils/schemas";
 import { useModal } from "@/components/modal";
 import { IconLoader } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
 
 
@@ -14,6 +14,7 @@ function Password() {
     const [loading, setLoading] = useState(false);
     const { openModal } = useModal();
     const { signin } = useAuthContext();
+    const source = useSearchParams().get("source");
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setLoading(true);
@@ -26,7 +27,7 @@ function Password() {
         const response = await signin(email.toString(), password.toString())
         if (response.status === 200) {
             setLoading(false);
-            router.push("/home");
+            router.push(source || "/home");
         } else {
             switch (response.status) {
                 case 400:
@@ -48,7 +49,7 @@ function Password() {
 
                     break;
                 case 409:
-                    router.push(`/auth/activate?email=${encodeURIComponent(email?.toString() || "")}`)
+                    router.push(`/auth/activate?email=${encodeURIComponent(email?.toString() || "")}&source=${encodeURIComponent(source || "")}`)
                     break;
                 default:
                     if (response.data && response.data.message) {

@@ -2,12 +2,11 @@
 import { useAuthContext } from '@/api/utils/auth';
 import { IconLoader } from '@tabler/icons-react';
 import { motion, useAnimation } from 'framer-motion';
-import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function Layout({
   user,
-  admin,
+  admin
 }: {
   user: React.ReactNode
   admin: React.ReactNode
@@ -20,12 +19,12 @@ export default function Layout({
         overlay.start("hidden");
       })
     } else {
-      redirect("/")
+      overlay.start("hidden");
     }
   }, []);
   return <div className='relative flex items-center justify-center h-full'>
-    {account && account.role == "CLIENT" && user}
     {account && account.role == "ADMINISTRATOR" && admin}
+    {!(account && account.role == "ADMINISTRATOR") && user}
     <motion.div
       variants={{
         hidden: { opacity: 0, pointerEvents: "none" },

@@ -28,7 +28,7 @@ function Password() {
         if (response.status === 200) {
             setLoading(false);
             openModal(response.data.message)
-            router.push(`/auth/login`)
+            router.push(`/auth/login?source=${searchParams.get("source") || ""}`)
         } else {
             switch (response.status) {
                 case 400:

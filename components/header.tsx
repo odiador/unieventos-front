@@ -1,10 +1,12 @@
 "use client";
 import { useAuthContext } from "@/api/utils/auth";
-import { IconBrandAuth0, IconBrandOauth, IconDots, IconLogin, IconLogout2, IconRegistered, IconUserPlus } from "@tabler/icons-react";
+import { IconDots, IconLogin, IconLogout2, IconUserPlus } from "@tabler/icons-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 const Header = () => {
+    const source = usePathname();
     const headerValues = [
         {
             id: "events",
@@ -46,10 +48,10 @@ const Header = () => {
             </div>
             {account && <button className="hidden sm:block" onClick={() => signout()}>Cerrar Sesión</button>}
             {account && <button className="block sm:hidden button-icon" onClick={() => signout()}><IconLogout2 /></button>}
-            {!account && <Link href={"/auth/login"} className="button sm:block hidden">Inicia Sesión</Link>}
-            {!account && <Link href={"/auth/login"} className="button block sm:hidden button-icon"><IconLogin /></Link>}
-            {!account && <Link href={"/auth/signup"} className=" sm:block hidden button button-secondary">Regístrate</Link>}
-            {!account && <Link href={"/auth/signup"} className="button button-secondary button-icon block sm:hidden"><IconUserPlus /></Link>}
+            {!account && <Link href={`/auth/login?source=${encodeURIComponent(source)}`} className="button sm:block hidden">Inicia Sesión</Link>}
+            {!account && <Link href={`/auth/login?source=${encodeURIComponent(source)}`} className="button block sm:hidden button-icon"><IconLogin /></Link>}
+            {!account && <Link href={`/auth/signup?source=${encodeURIComponent(source)}`} className=" sm:block hidden button button-secondary">Regístrate</Link>}
+            {!account && <Link href={`/auth/signup?source=${encodeURIComponent(source)}`} className="button button-secondary button-icon block sm:hidden"><IconUserPlus /></Link>}
         </header>
     );
 }

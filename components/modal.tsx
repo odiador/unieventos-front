@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from 'framer-motion';
 import { createContext, useState, ReactNode, useContext } from 'react';
 
