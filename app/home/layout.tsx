@@ -2,15 +2,19 @@
 import { useAuthContext } from '@/api/utils/auth';
 import { IconLoader } from '@tabler/icons-react';
 import { motion, useAnimation } from 'framer-motion';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 
-export default function Layout({
-  user,
-  admin
-}: {
+export default function Layout({ user, admin }: {
   user: React.ReactNode
   admin: React.ReactNode
 }) {
+  return <Suspense><Lay admin={admin} user={user} /></Suspense>
+}
+
+const Lay = ({ user, admin }: {
+  user: React.ReactNode
+  admin: React.ReactNode
+}) => {
   const { account, loggedIn, updateRole } = useAuthContext();
   const overlay = useAnimation();
   useEffect(() => {
@@ -22,7 +26,7 @@ export default function Layout({
       overlay.start("hidden");
     }
   }, []);
-  return <div className='relative flex items-center justify-center h-full'>
+  return <div className='relative flex items-top justify-center h-full'>
     {account && account.role == "ADMINISTRATOR" && admin}
     {!(account && account.role == "ADMINISTRATOR") && user}
     <motion.div

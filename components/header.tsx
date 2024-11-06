@@ -1,27 +1,34 @@
 "use client";
 import { useAuthContext } from "@/api/utils/auth";
-import { IconDots, IconLogin, IconLogout2, IconUserPlus } from "@tabler/icons-react";
+import { IconDots, IconLogin, IconLogout2, IconShoppingCart, IconUser, IconUserCheck, IconUserPlus, IconX } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import CardShadow from "./cardshadow";
+import { useModal } from "./modal";
+import { openCartAction } from "./rightBarCarts";
+import { CartDetailDTO } from "@/api/utils/schemas";
 
 const Header = () => {
+    const { closeRightBar, openRightBar, openCustomModal, closeModal, openModal } = useModal();
     const source = usePathname();
     const headerValues = [
         {
             id: "events",
             name: "Eventos",
-            href: "/events"
+            href: "/home/events"
         },
         {
             id: "cals",
             name: "Calendarios",
-            href: "/calendars"
+            href: "/home/calendars"
         },
     ]
-    const { account, signout } = useAuthContext();
-    const { updateRole } = useAuthContext();
+    const [items, setItems] = useState<CartDetailDTO[]>();
+    const { account, signout, updateRole } = useAuthContext();
     useEffect(() => { updateRole() }, [])
+
     return (
         <header className="sticky top-0 bg-black/10 z-50 backdrop-blur-lg flex justify-center items-stretch w-full px-4 py-2 gap-2">
             <div className="grow h-full flex items-center gap-1 sm:justify-normal justify-between">
@@ -39,19 +46,62 @@ const Header = () => {
                                 </Link>
                             </div>)
                     })}
+                    {account && account.role == "CLIENT" && <label>|</label>}
+                    {account && account.role == "CLIENT" && <div key="carts"
+                        className="px-2 cursor-pointer relative text-lg transition-colors font-semibold text-[#8e9093] hover:text-white"
+                        onClick={() => openCartAction(openRightBar, closeRightBar, true, setItems, items, openCustomModal, closeModal, openModal)}
+                    ><IconShoppingCart /></div>}
                 </div>
                 <div className="block sm:hidden">
-                    <button className="button-icon" onClick={() => { }}>
+                    <button className="button-icon" onClick={() => {
+                        openRightBar(<motion.div
+                            className="max-w-full sm:max-w-96 h-full gap-2 flex flex-col px-8 sm:pl-8 sm:pr-2"
+                            transition={{ duration: 0.2, delay: 0.1 }}
+                            initial={{ width: "0px" }}
+                            animate={{ width: "100%" }}
+                        >
+                            <CardShadow>
+                                <IconX className="self-end hover:scale-150 scale-125 transition-transform cursor-pointer"
+                                    onClick={() => closeRightBar()} />
+                                {account && <Link key="home" className="button w-full relative" href={"/home"}>Home</Link>}
+                                {headerValues.map(values => {
+                                    return (
+                                        <Link
+                                            key={values.id}
+                                            className="button w-full relative"
+                                            href={values.href}>
+                                            {values.name}
+                                        </Link>
+                                    )
+                                })}
+                                {account && account.role == "CLIENT" && <button key="carts"
+                                    className="flex justify-center items-center"
+                                    onClick={() => openCartAction(openRightBar, closeRightBar, true, setItems, items, openCustomModal, closeModal, openModal)}
+                                ><IconShoppingCart /></button>}
+                            </CardShadow>
+                        </motion.div>)
+                    }}>
                         <IconDots />
                     </button>
                 </div>
             </div>
-            {account && <button className="hidden sm:block" onClick={() => signout()}>Cerrar Sesión</button>}
-            {account && <button className="block sm:hidden button-icon" onClick={() => signout()}><IconLogout2 /></button>}
-            {!account && <Link href={`/auth/login?source=${encodeURIComponent(source)}`} className="button sm:block hidden">Inicia Sesión</Link>}
-            {!account && <Link href={`/auth/login?source=${encodeURIComponent(source)}`} className="button block sm:hidden button-icon"><IconLogin /></Link>}
-            {!account && <Link href={`/auth/signup?source=${encodeURIComponent(source)}`} className=" sm:block hidden button button-secondary">Regístrate</Link>}
-            {!account && <Link href={`/auth/signup?source=${encodeURIComponent(source)}`} className="button button-secondary button-icon block sm:hidden"><IconUserPlus /></Link>}
+            {<button className="button-icon" onClick={() => {
+                openRightBar(<motion.div
+                    className="max-w-full sm:max-w-96 h-full gap-2 flex flex-col px-8 sm:pl-8 sm:pr-2"
+                    transition={{ duration: 0.2, delay: 0.1 }}
+                    initial={{ width: "0px" }}
+                    animate={{ width: "100%" }}
+                >
+                    <CardShadow>
+                        <IconX className="self-end hover:scale-150 scale-125 transition-transform cursor-pointer"
+                            onClick={() => closeRightBar()} />
+
+                        {!account && <Link href={`/auth/login?source=${encodeURIComponent(source)}`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconLogin />Inicia Sesión</Link>}
+                        {!account && <Link href={`/auth/signup?source=${encodeURIComponent(source)}`} className="button flex items-center justify-center gap-1 button-secondary" onClick={() => closeRightBar()} ><IconUserPlus />Regístrate</Link>}
+                        {account && <button className="button flex items-center justify-center gap-1 button-secondary" onClick={() => { signout(); closeRightBar(); }}><IconLogout2 />Cerrar Sesión</button>}
+                    </CardShadow>
+                </motion.div>)
+            }}>{account ? <IconUserCheck /> : <IconUser />}</button>}
         </header>
     );
 }

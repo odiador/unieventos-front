@@ -12,6 +12,24 @@ interface CheckUserDTO {
     email: string,
 }
 
+interface CartDTO {
+    id: string,
+    date: string,
+    items: CartDetailDTO[],
+    userId: string
+}
+interface CartDetailDTO {
+    quantity: number,
+    calendarId: string,
+    eventName: string,
+    localityName: string,
+    price: number
+    calendarName: string,
+    eventImage: string,
+    freeTickets: number
+}
+
+
 export const eventTypes = ["SPORT", "CONCERT", "CULTURAL", "FASHION", "BEAUTY"];
 
 interface FindEventDTO {
@@ -33,6 +51,11 @@ interface BadRequestFieldsDTO {
     status: number,
     message: string,
     errors: { field: string, message: string }[]
+}
+
+interface ErrorDTO {
+    status: number,
+    message: string,
 }
 
 interface EditEventDTO {
@@ -87,4 +110,7 @@ interface ResponseDTO<T> {
     response: T | null
 }
 
-export type { LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO, CalendarDTO, CalendarOnlyDTO, EditEventDTO, BadRequestFieldsDTO };
+export type {
+    LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO,
+    CalendarDTO, CalendarOnlyDTO, EditEventDTO, BadRequestFieldsDTO, CartDTO, CartDetailDTO, ErrorDTO
+};

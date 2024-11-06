@@ -68,4 +68,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     {children}
   </AuthContext.Provider>
 }
-export { AuthProvider, checkUserCookie as checkRole, useAuthContext };
+const decodePayLoad = (token: string): { exp: number, iat: number, id: string, name: string, role: string, sub: string } => {
+  return JSON.parse(Buffer.from(token.split(" ")[1].split(".")[1], 'base64').toString('utf8'));
+}
+export { AuthProvider, checkUserCookie as checkRole, useAuthContext, decodePayLoad };

@@ -1,9 +1,12 @@
 "use client";
-import { findEvent } from "@/api/utils/api";
+import { addItemToCart, findEvent } from "@/api/utils/api";
 import { useAuthContext } from "@/api/utils/auth";
-import { FindEventDTO, FindEventLocalityDTO } from "@/api/utils/schemas";
+import { CartDetailDTO, FindEventDTO, FindEventLocalityDTO } from "@/api/utils/schemas";
+import { formatTime } from "@/api/utils/util";
 import { useModal } from "@/components/modal";
+import { openCartAction } from "@/components/rightBarCarts";
 import { IconAddressBook, IconCash, IconCategory2, IconMapPin, IconShoppingCart, IconShoppingCartPlus, IconTextCaption, IconUser, IconUsersGroup } from "@tabler/icons-react";
+import { getCookie } from "cookies-next";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -12,9 +15,9 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
     const [eventFound, setEvent] = useState<FindEventDTO | null>(null);
     const [loading, setLoading] = useState(true);
     const { loggedIn, account } = useAuthContext();
-    const [buttonLoading, setButtonLoading] = useState(true);
+    const [items, setItems] = useState<CartDetailDTO[]>();
     const router = useRouter();
-    const { openCustomModal, openModal, closeModal } = useModal();
+    const { openCustomModal, openRightBar, closeRightBar, openModal, closeModal } = useModal();
     useEffect(() => {
 
         findEvent({ idCalendar: params.id, name: decodeURIComponent(params.eventid) }).then((response) => {
@@ -42,24 +45,47 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                 </div >);
             return;
         }
+        if (!getCookie("cart")) {
+            if (account)
+                openCartAction(openRightBar, closeRightBar, true, setItems, items, openCustomModal, closeModal, openModal)
+            return;
+        }
         const maxQuantity = loc.maxCapability - loc.ticketsSold;
         const onSubmit = (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             const formdata = new FormData(e.currentTarget);
             const formQuantity = formdata.get("quantity")?.toString();
             const quantity = Number.parseInt(formQuantity || "0");
-            console.log(quantity);
+            const cartId = getCookie("cart");
+            if (cartId) {
+                addItemToCart(
+                    {
+                        calendarId: params.id,
+                        cartId: cartId,
+                        eventName: params.eventid,
+                        localityName: loc.name,
+                        quantity: quantity
+                    }, getCookie("jwt") || "").then((response) => {
+                        console.log(response.status);
+                        console.log(response.data);
+                        if (response.status == 200) {
+
+                        }
+
+                    })
+            }
         };
         openCustomModal(
             <form onSubmit={onSubmit}
-                className="rounded-lg bg-black/10 p-2">
+                className="rounded-lg bg-[#292e34] p-2 flex flex-col gap-2">
+                <label>Ingresa una cantidad</label>
                 <input
                     type="number"
                     max={maxQuantity}
                     name="quantity"
-                    placeholder="Cantidad a comprar" onChange={e => {
-                    }} />
-                <div className="flex">
+                    placeholder="Cantidad a comprar" />
+                <p className="validator-message">{`Máximo ${maxQuantity}`}</p>
+                <div className="flex gap-1">
                     <button type="submit">Agregar</button>
                     <button type="button" className="button-secondary" onClick={() => closeModal()}>Cancelar</button>
                 </div>
@@ -156,17 +182,5 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
 }
 
 
-/**
- * 
- * @param num 
- * @returns 
- */
-function padTo2Digits(num: number) {
-    return num.toString().padStart(2, '0');
-}
-
-function formatTime(date: Date) {
-    return `${padTo2Digits(date.getHours())}:${padTo2Digits(date.getMinutes())}`
-}
 
 export default EventPage;

@@ -1,4 +1,4 @@
-import { CalendarOnlyDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, ResponseDTO } from "./schemas";
+import { CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, ResponseDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -64,6 +64,87 @@ const editEvent = (data: EditEventDTO, token: string) => {
 
 const checkUser = (token: string) => {
     return executeRequest<CheckUserDTO>(`/api/auth/checkUser`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            credentials: 'include',
+        }
+    )
+}
+
+const addItemToCart = (
+    data: {
+        cartId: string,
+        quantity: number,
+        calendarId: string,
+        localityName: string,
+        eventName: string
+    }, token: string) => {
+    return executeRequest<boolean>(`/api/carts/cart/addItem`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            body: JSON.stringify(data),
+            credentials: 'include',
+        }
+    )
+}
+const removeItemToCart = (
+    data: {
+        cartId: string,
+        calendarId: string,
+        eventName: string,
+        localityName: string
+    }, token: string) => {
+    return executeRequest<boolean>(`/api/carts/cart/removeItem`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            body: JSON.stringify(data),
+            credentials: 'include',
+        }
+    )
+}
+
+const findCart = (idCart: string, token: string) => {
+    return executeRequest<CartDTO>(`/api/carts/find`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            body: idCart,
+            credentials: 'include',
+        }
+    )
+}
+
+const createCart = (token: string) => {
+    return executeRequest(`/api/carts/create`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            credentials: 'include',
+        }
+    )
+}
+
+
+const findAllCarts = (token: string) => {
+    return executeRequest<CartDTO[]>(`/api/carts/findAll`,
         {
             method: "POST",
             headers: {
@@ -162,4 +243,7 @@ function signup(values: { email: string; password: string; name: string; cedula:
         })
 }
 
-export { activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation, signup, validateMail, editEvent };
+export {
+    activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
+    signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart
+};
