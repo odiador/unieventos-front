@@ -2,13 +2,21 @@
 
 import { useAuthContext } from "@/api/utils/auth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  return <Suspense><AuthLayout>{children}</AuthLayout></Suspense>
+}
+
+const AuthLayout = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
   const router = useRouter();
   const { loggedIn } = useAuthContext();
   useEffect(() => {
