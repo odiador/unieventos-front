@@ -156,10 +156,12 @@ const openCartAction = (openRightBar: (content: ReactNode) => void, closeRightBa
                     }
 
                     <div className="flex w-full gap-2 sm:flex-row flex-col">
-                        <button className="sm:flex-1 button-secondary" onClick={() => {
+                        <button className="w-full text-nowrap button-secondary" onClick={() => {
                             deleteCookie("cart");
                             closeRightBar();
+                            openCartAction(openRightBar, closeRightBar, closeable, setItems, items, openCustomModal, closeModal, openModal);
                         }}>Quitar selección</button>
+                        <Link className="w-full" href={"/home/cart"}><button type="button" className="w-full">Pagar</button></Link>
                     </div>
                 </CardShadow>
             </motion.div >)
@@ -183,17 +185,24 @@ const openCartAction = (openRightBar: (content: ReactNode) => void, closeRightBa
                     {closeable && <IconX className="self-end hover:scale-150 scale-125 transition-transform cursor-pointer"
                         onClick={() => closeRightBar()} />}
                     <h2 className="text-3xl">Selecciona un carrito</h2>
-                    <div className="flex-1 h-full">
+                    <div className="flex-1 h-full gap-2 flex flex-col">
                         {
                             carts.carts &&
                             carts.carts.map((cart) => {
+                                const date = new Date(cart.date);
                                 return (
-                                    <div key={cart.id} onClick={() => {
-                                        setCookie("cart", cart.id);
-                                        carritoSiSeleccionado().then(t => {
-                                            openRightBar(t);
-                                        })
-                                    }}>{`Fecha de modificación: ${new Date(cart.date).toISOString()} - tam:${cart.items.length}`}</div>
+                                    <div key={cart.id}
+                                        className="py-1 px-8 rounded-full bg-white/5 hover:bg-white/10 transition-colors cursor-pointer flex flex-col"
+                                        onClick={() => {
+                                            setCookie("cart", cart.id);
+                                            carritoSiSeleccionado().then(t => {
+                                                openRightBar(t);
+                                            })
+                                        }}>
+                                        <label className="pointer-events-none">{`Fecha de modificación: ${date.toLocaleDateString()}`}</label>
+                                        <label className="pointer-events-none">{`Hora: ${date.toLocaleTimeString()}`}</label>
+                                        <label className="pointer-events-none">{`Tamaño: ${cart.items.length}`}</label>
+                                    </div>
                                 )
                             })
 

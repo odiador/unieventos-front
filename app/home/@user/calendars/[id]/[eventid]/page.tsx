@@ -62,7 +62,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                     {
                         calendarId: params.id,
                         cartId: cartId,
-                        eventName: params.eventid,
+                        eventName: decodeURIComponent(params.eventid),
                         localityName: loc.name,
                         quantity: quantity
                     }, getCookie("jwt") || "").then((response) => {

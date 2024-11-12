@@ -1,4 +1,4 @@
-import { CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, ResponseDTO } from "./schemas";
+import { AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, ResponseDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -128,6 +128,18 @@ const findCart = (idCart: string, token: string) => {
         }
     )
 }
+const applyCoupon = (code: string, token: string) => {
+    return executeRequest<AppliedCouponDTO>(`/api/coupons/apply/${code}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            credentials: 'include',
+        }
+    )
+}
 
 const createCart = (token: string) => {
     return executeRequest(`/api/carts/create`,
@@ -245,5 +257,6 @@ function signup(values: { email: string; password: string; name: string; cedula:
 
 export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
-    signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart
+    signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
+    applyCoupon
 };
