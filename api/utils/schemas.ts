@@ -30,11 +30,18 @@ interface OrderDTO {
     total: number,
     couponId: ObjectId,
 }
+interface URLDTO {
+    url: string
+}
 
 interface OrderDetailDTO {
     calendarId: string,
     eventId: string,
     localityId: string,
+    calendarName: string,
+    eventName: string,
+    localityName: string,
+    eventImage: string,
     price: number,
     quantity: number
 }
@@ -159,5 +166,5 @@ interface ResponseDTO<T> {
 export type {
     LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO,
     CalendarDTO, CalendarOnlyDTO, EditEventDTO, BadRequestFieldsDTO, CartDTO, CartDetailDTO, ErrorDTO,
-    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment
+    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO
 };

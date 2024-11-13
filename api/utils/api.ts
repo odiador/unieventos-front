@@ -1,4 +1,4 @@
-import { AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO } from "./schemas";
+import { AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -126,6 +126,46 @@ const findCart = (idCart: string, token: string) => {
                 "Authorization": token,
             },
             body: idCart,
+            credentials: 'include',
+        }
+    )
+}
+
+const findOrder = (id: string, token: string) => {
+    return executeRequest<OrderDTO>(`/api/orders/find?id=${id}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            credentials: 'include',
+        }
+    )
+}
+
+const findAllOrders = (token: string) => {
+    return executeRequest<OrderDTO[]>(`/api/orders/findAll`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            credentials: 'include',
+        }
+    )
+}
+
+const payOrder = (id: string, token: string) => {
+    return executeRequest<URLDTO>(`/api/orders/pay`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            body: JSON.stringify({ id }),
             credentials: 'include',
         }
     )
@@ -274,5 +314,5 @@ function signup(values: { email: string; password: string; name: string; cedula:
 export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
-    applyCoupon, createOrder
+    applyCoupon, createOrder, findOrder, payOrder, findAllOrders
 };
