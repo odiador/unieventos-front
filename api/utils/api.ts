@@ -128,6 +128,20 @@ const findCart = (idCart: string, token: string) => {
         }
     )
 }
+
+const createOrder = (cartId: string, token: string, couponCode?: string) => {
+    return executeRequest<AppliedCouponDTO>(`/api/orders/create?id=${cartId}${couponCode ? `&coupon=${couponCode}:` : ""}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            credentials: 'include',
+        }
+    )
+}
+
 const applyCoupon = (code: string, token: string) => {
     return executeRequest<AppliedCouponDTO>(`/api/coupons/apply/${code}`,
         {
@@ -258,5 +272,5 @@ function signup(values: { email: string; password: string; name: string; cedula:
 export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
-    applyCoupon
+    applyCoupon, createOrder
 };

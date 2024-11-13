@@ -1,13 +1,14 @@
 "use client";
 
-import { applyCoupon, findCart } from "@/api/utils/api";
+import { applyCoupon, createOrder, findCart } from "@/api/utils/api";
 import { useAuthContext } from "@/api/utils/auth";
-import { AppliedCouponDTO, CartDetailDTO, CartDTO, ErrorDTO } from "@/api/utils/schemas";
+import { AppliedCouponDTO, BadRequestFieldsDTO, CartDetailDTO, CartDTO, ErrorDTO } from "@/api/utils/schemas";
 import CardShadow from "@/components/cardshadow";
 import { useModal } from "@/components/modal";
 import { IconX } from "@tabler/icons-react";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const Cart = () => {
@@ -19,6 +20,7 @@ const Cart = () => {
     const [appliedDiscount, setAppliedDiscount] = useState(false);
     const [validCoupon, setValidCoupon] = useState<AppliedCouponDTO>();
     const [couponCode, setCouponCode] = useState("");
+    const router = useRouter();
 
     const [extraData, setExtraData] = useState<{ date: Date, subtotal: number, total: number }>();
 
@@ -109,19 +111,32 @@ const Cart = () => {
                                     <label className={clsName}>{item.calendarName}</label>
                                     <label className={clsName}>{item.eventName}</label>
                                     <label className={clsName}>{item.localityName}</label>
-                                    <label className={clsName}>{item.price}</label>
+                                    <label className={clsName}>{`$${item.price}`}</label>
                                     <label className={clsName}>{item.quantity}</label>
-                                    <label className={clsName}>{item.price * item.quantity}</label>
+                                    <label className={clsName}>{`$${item.price * item.quantity}`}</label>
                                 </div>
                             )
                         })
                         }
 
                     </div>
-                    <form className="flex flex-col w-fit px-4" onSubmit={(e) => {
+                    <form className="flex flex-col lg:w-fit w-full px-4" onSubmit={(e) => {
                         e.preventDefault();
-                        alert("orden creada");
-                        
+                        const jwt = getCookie("jwt");
+                        if (jwt)
+                            createOrder(cartData.id, jwt, validCoupon ? couponCode : undefined).then((response) => {
+                                if (response.status == 200) {
+
+                                } else if (response.status == 400) {
+                                    const errors = response.data as unknown as BadRequestFieldsDTO;
+                                    openModal(JSON.stringify(errors));
+                                } else {
+                                    const errorData = response.data as unknown as ErrorDTO;
+                                    openModal(errorData.message);
+                                }
+                            })
+
+
                     }}>
 
                         <div className="lg:flex hidden flex-col w-fit px-4">
@@ -171,7 +186,10 @@ const Cart = () => {
 
                         </div>
                         <h3>{`Subtotal: $${extraData.total}`}</h3>
-                        <button type="submit">Crear orden</button>
+                        <div className="flex w-full gap-2 sm:gap-4 lg:gap-2 sm:flex-row flex-col">
+                            <button className="w-full button-secondary" type="button" onClick={() => router.back()}>Volver</button>
+                            <button className="w-full" type="submit">Crear orden</button>
+                        </div>
                     </form>
                 </div>
             </CardShadow >}
