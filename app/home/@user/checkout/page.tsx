@@ -42,7 +42,7 @@ const Cart = () => {
             const items = JSON.parse(JSON.stringify(cartData.items)) as CartDetailDTO[];
             cartDataUpdated.items = items.map(i => {
                 if (!validCoupon.forSpecialEvent
-                    || (validCoupon.forSpecialEvent && validCoupon.calendarId === i.calendarId && validCoupon.eventName === i.eventName))
+                    || (validCoupon.forSpecialEvent && validCoupon.calendarId === i.calendarId && validCoupon.eventId === i.eventId))
                     i.price *= multiplier;
                 return i;
             })
@@ -126,7 +126,10 @@ const Cart = () => {
                         if (jwt)
                             createOrder(cartData.id, jwt, validCoupon ? couponCode : undefined).then((response) => {
                                 if (response.status == 200) {
-
+                                    const order = response.data.response;
+                                    if (order) {
+                                        router.push(`/home/orders/${order.id}`)
+                                    }
                                 } else if (response.status == 400) {
                                     const errors = response.data as unknown as BadRequestFieldsDTO;
                                     openModal(JSON.stringify(errors));

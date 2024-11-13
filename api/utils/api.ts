@@ -1,4 +1,4 @@
-import { AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, ResponseDTO } from "./schemas";
+import { AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -132,7 +132,7 @@ const findCart = (idCart: string, token: string) => {
 }
 
 const createOrder = (cartId: string, token: string, couponCode?: string) => {
-    return executeRequest<AppliedCouponDTO>(`/api/orders/create?id=${cartId}${couponCode ? `&coupon=${couponCode}:` : ""}`,
+    return executeRequest<OrderDTO>(`/api/orders/create?id=${cartId}${couponCode ? `&coupon=${couponCode}` : ""}`,
         {
             method: "POST",
             headers: {

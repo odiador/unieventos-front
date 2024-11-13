@@ -161,7 +161,7 @@ const openCartAction = (openRightBar: (content: ReactNode) => void, closeRightBa
                             closeRightBar();
                             openCartAction(openRightBar, closeRightBar, closeable, setItems, items, openCustomModal, closeModal, openModal);
                         }}>Quitar selección</button>
-                        <Link className="w-full" href={"/home/cart"}><button type="button" className="w-full">Pagar</button></Link>
+                        <Link className="w-full" href={"/home/checkout"}><button type="button" className="w-full">Pagar</button></Link>
                     </div>
                 </CardShadow>
             </motion.div >)
