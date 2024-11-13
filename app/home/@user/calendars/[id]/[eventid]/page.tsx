@@ -20,7 +20,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
     const { openCustomModal, openRightBar, closeRightBar, openModal, closeModal } = useModal();
     useEffect(() => {
 
-        findEvent({ idCalendar: params.id, name: decodeURIComponent(params.eventid) }).then((response) => {
+        findEvent({ idCalendar: params.id, idEvent: decodeURIComponent(params.eventid) }).then((response) => {
             if (response.status == 200) {
                 setEvent(response.data.response);
                 setLoading(false);
@@ -62,8 +62,8 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                     {
                         calendarId: params.id,
                         cartId: cartId,
-                        eventName: decodeURIComponent(params.eventid),
-                        localityName: loc.name,
+                        eventId: decodeURIComponent(params.eventid),
+                        localityId: loc.id,
                         quantity: quantity
                     }, getCookie("jwt") || "").then((response) => {
                         console.log(response.status);

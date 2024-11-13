@@ -33,8 +33,8 @@ const openCartAction = (openRightBar: (content: ReactNode) => void, closeRightBa
                     {
                         calendarId: item.calendarId,
                         cartId: cart,
-                        eventName: item.eventName,
-                        localityName: item.localityName
+                        eventId: item.eventId,
+                        localityId: item.localityId
                     },
                     getCookie("jwt") || "").then((response) => {
                         if (response.status == 200) {
@@ -99,8 +99,8 @@ const openCartAction = (openRightBar: (content: ReactNode) => void, closeRightBa
                                                                 {
                                                                     calendarId: item.calendarId,
                                                                     cartId: cart.id,
-                                                                    eventName: item.eventName,
-                                                                    localityName: item.localityName,
+                                                                    eventId: item.eventId,
+                                                                    localityId: item.localityId,
                                                                     quantity: quantity
                                                                 }, getCookie("jwt") || "").then((response) => {
                                                                     if (response.status == 200)
@@ -118,7 +118,7 @@ const openCartAction = (openRightBar: (content: ReactNode) => void, closeRightBa
                                                                 })
 
                                                         }
-                                                        findEvent({ idCalendar: item.calendarId, name: item.eventName }).then(response => {
+                                                        findEvent({ idCalendar: item.calendarId, idEvent: item.eventName }).then(response => {
                                                             if (response.status == 200 && response.data.response) {
                                                                 const result = response.data.response.localities.filter((l) => l.name === item.localityName);
                                                                 if (result && result.length > 0)

@@ -89,15 +89,13 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
             const startTime = formStartTime.toString() === eventStartTime.toString() ? null : formStartTime.toISOString();
             const endTime = eventEndTime.toString() === formEndTime.toString() ? null : formEndTime.toISOString();
             const status = formdata.get("status")?.toString();
-            const newEvent = { idCalendar: params.id, name, newName, eventImage: eventImage, localityImage, city, description, address, tags, type: eventType, startTime, endTime, status } as EditEventDTO;
+            const newEvent = { idCalendar: params.id, idEvent: params.eventid, name, newName, eventImage: eventImage, localityImage, city, description, address, tags, type: eventType, startTime, endTime, status } as EditEventDTO;
             console.log(newEvent);
             const editedEvent = await editEvent(newEvent, getCookie("jwt") || "");
             console.log(editedEvent.data);
 
             if (editedEvent.status == 200) {
-                if (newName && name !== newName) {
-                    router.replace(`/dashboard/calendars/edit/${params.id}/${encodeURIComponent(newName)}`)
-                }
+                openModal("Evento editado exitosamente")
             } else {
                 const errorData = editedEvent.data as unknown as BadRequestFieldsDTO;
                 openModal(JSON.stringify(errorData));
@@ -108,7 +106,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
 
     useEffect(() => {
 
-        findEvent({ idCalendar: params.id, name: decodeURIComponent(params.eventid) }).then((response) => {
+        findEvent({ idCalendar: params.id, idEvent: decodeURIComponent(params.eventid) }).then((response) => {
             if (response.status == 200) {
                 setEvent(response.data.response);
                 setEventTags(response.data.response?.tags);

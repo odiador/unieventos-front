@@ -33,8 +33,8 @@ interface OrderDTO {
 
 interface OrderDetailDTO {
     calendarId: string,
-    eventName: string,
-    localityName: string,
+    eventId: string,
+    localityId: string,
     price: number,
     quantity: number
 }
@@ -55,14 +55,16 @@ interface AppliedCouponDTO {
     discount: number,
     forSpecialEvent: boolean,
     calendarId: string,
-    eventName: string,
+    eventId: string,
     isUnique: boolean
 }
 
 interface CartDetailDTO {
     quantity: number,
     calendarId: string,
+    eventId: string,
     eventName: string,
+    localityId: string,
     localityName: string,
     price: number
     calendarName: string,
@@ -74,6 +76,7 @@ interface CartDetailDTO {
 export const eventTypes = ["SPORT", "CONCERT", "CULTURAL", "FASHION", "BEAUTY"];
 
 interface FindEventDTO {
+    id: string,
     name: string,
     eventImage: string,
     localityImage: string,
@@ -101,7 +104,8 @@ interface ErrorDTO {
 
 interface EditEventDTO {
     idCalendar: string,
-    name: string,
+    idEvent: string,
+    name?: string,
     newName?: string | null,
     eventImage?: string | null,
     localityImage?: string | null,
@@ -134,6 +138,7 @@ interface CalendarOnlyDTO {
 }
 
 interface FindEventLocalityDTO {
+    id: string,
     name: string,
     price: number,
     ticketsSold: number,

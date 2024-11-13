@@ -27,7 +27,9 @@ const validateMail = (email: string) => {
 const editEvent = (data: EditEventDTO, token: string) => {
     const formData = new FormData();
     formData.append("idCalendar", data.idCalendar);
-    formData.append("name", data.name);
+    formData.append("idEvent", data.idEvent);
+    if (data.name)
+        formData.append("name", data.name);
     if (data.address)
         formData.append("address", data.address);
     if (data.newName)
@@ -80,8 +82,8 @@ const addItemToCart = (
         cartId: string,
         quantity: number,
         calendarId: string,
-        localityName: string,
-        eventName: string
+        localityId: string,
+        eventId: string
     }, token: string) => {
     return executeRequest<boolean>(`/api/carts/cart/addItem`,
         {
@@ -99,8 +101,8 @@ const removeItemToCart = (
     data: {
         cartId: string,
         calendarId: string,
-        eventName: string,
-        localityName: string
+        eventId: string,
+        localityId: string
     }, token: string) => {
     return executeRequest<boolean>(`/api/carts/cart/removeItem`,
         {
@@ -192,7 +194,7 @@ function login(data: string) {
             body: data
         })
 }
-function findEvent(data: { idCalendar: string, name: string }) {
+function findEvent(data: { idCalendar: string, idEvent: string }) {
     return executeRequest<FindEventDTO>("/api/events/find",
         {
             method: "POST",
