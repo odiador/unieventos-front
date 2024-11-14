@@ -4,8 +4,9 @@ import { editUserData, getAccountInfo } from "@/api/utils/api";
 import { useAuthContext } from "@/api/utils/auth";
 import { AccountInfoDTO, BadRequestFieldsDTO } from "@/api/utils/schemas";
 import CardShadow from "@/components/cardshadow";
+import { deleteAccountModal } from "@/components/deleteAccountModal";
 import { useModal } from "@/components/modal";
-import { IconLoader } from "@tabler/icons-react";
+import { IconLoader, IconX } from "@tabler/icons-react";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -29,14 +30,8 @@ const AccountPage = () => {
     const [editing, setEditing] = useState(false);
     const [accountInfo, setAccountInfo] = useState<AccountInfoDTO>();
     const { updateRole } = useAuthContext();
-    const { openModal, openCustomModal } = useModal();
-    const deleteAccountModal = () => {
-        return (
-            <CardShadow>
-                <div>hola</div>
-            </CardShadow>
-        )
-    }
+    const { openModal, openCustomModal, closeModal } = useModal();
+
     useEffect(() => {
         updateRole().then(v => {
             const jwt = getCookie("jwt");
@@ -178,7 +173,7 @@ const AccountPage = () => {
 
                 <button className="button-danger" type="button" onClick={() => {
                     setDeleteLoading(true);
-                    openCustomModal(deleteAccountModal());
+                    openCustomModal(deleteAccountModal(closeModal, openModal));
                     setDeleteLoading(false);
                 }}>
                     {deleteLoading && <IconLoader className="animate-spin text-black/50" />}

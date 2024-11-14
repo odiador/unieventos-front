@@ -249,6 +249,18 @@ const findAllCarts = (token: string) => {
     )
 }
 
+function deleteAccount(data: { email: string, password: string }, jwt: string) {
+    return executeRequest<String>("/api/clients/delete",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": jwt,
+            },
+            body: JSON.stringify(data)
+        })
+}
+
 function login(data: string) {
     return executeRequest<LoginResponseDTO>("/api/auth/login",
         {
@@ -339,5 +351,5 @@ function signup(values: { email: string; password: string; name: string; cedula:
 export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
-    applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData
+    applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData, deleteAccount
 };
