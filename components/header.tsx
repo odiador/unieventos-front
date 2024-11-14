@@ -1,5 +1,6 @@
 "use client";
 import { useAuthContext } from "@/api/utils/auth";
+import { CartDetailDTO } from "@/api/utils/schemas";
 import { IconDots, IconLogin, IconLogout2, IconShoppingCart, IconUser, IconUserCheck, IconUserPlus, IconX } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -8,7 +9,6 @@ import { useEffect, useState } from "react";
 import CardShadow from "./cardshadow";
 import { useModal } from "./modal";
 import { openCartAction } from "./rightBarCarts";
-import { CartDetailDTO } from "@/api/utils/schemas";
 
 const Header = () => {
     const { closeRightBar, openRightBar, openCustomModal, closeModal, openModal } = useModal();
@@ -46,11 +46,6 @@ const Header = () => {
                                 </Link>
                             </div>)
                     })}
-                    {account && account.role == "CLIENT" && <label>|</label>}
-                    {account && account.role == "CLIENT" && <div key="carts"
-                        className="px-2 cursor-pointer relative text-lg transition-colors font-semibold text-[#8e9093] hover:text-white"
-                        onClick={() => openCartAction(openRightBar, closeRightBar, true, setItems, items, openCustomModal, closeModal, openModal)}
-                    ><IconShoppingCart /></div>}
                 </div>
                 <div className="block sm:hidden">
                     <button className="button-icon" onClick={() => {
@@ -85,6 +80,10 @@ const Header = () => {
                     </button>
                 </div>
             </div>
+            {account && account.role == "CLIENT" && <button key="carts"
+                className="button-icon"
+                onClick={() => openCartAction(openRightBar, closeRightBar, true, setItems, items, openCustomModal, closeModal, openModal)}
+            ><IconShoppingCart /></button>}
             {<button className="button-icon" onClick={() => {
                 openRightBar(<motion.div
                     className="max-w-full sm:max-w-96 h-full gap-2 flex flex-col px-8 sm:pl-8 sm:pr-2"
@@ -98,7 +97,12 @@ const Header = () => {
 
                         {!account && <Link href={`/auth/login?source=${encodeURIComponent(source)}`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconLogin />Inicia Sesión</Link>}
                         {!account && <Link href={`/auth/signup?source=${encodeURIComponent(source)}`} className="button flex items-center justify-center gap-1 button-secondary" onClick={() => closeRightBar()} ><IconUserPlus />Regístrate</Link>}
-                        {account && <button className="button flex items-center justify-center gap-1 button-secondary" onClick={() => { signout(); closeRightBar(); }}><IconLogout2 />Cerrar Sesión</button>}
+                        {account && <Link href={`/home/account`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Gestionar Cuenta</Link>}
+                        {account && account.role == "CLIENT" && <Link href={`/home/orders`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Ver Ordenes</Link>}
+                        {account && account.role == "CLIENT" && <Link href={`/home/orderhistory`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Ver Historial de Compras</Link>}
+                        <div className="h-full flex place-items-end w-full">
+                            {account && <button className="w-full button flex items-center justify-center gap-1 button-secondary" onClick={() => { signout(); closeRightBar(); }}><IconLogout2 />Cerrar Sesión</button>}
+                        </div>
                     </CardShadow>
                 </motion.div>)
             }}>{account ? <IconUserCheck /> : <IconUser />}</button>}
