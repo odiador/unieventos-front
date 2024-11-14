@@ -44,6 +44,9 @@ button, .button {
 .button-secondary {
    @apply bg-[#383d41] text-white/80 border-white/10;
 }
+.button-danger {
+   @apply bg-red-500 text-white border-white/10;
+}
 
 .button-terciary {
    @apply bg-transparent text-white/80 text-lg border-[3px] border-white/10;

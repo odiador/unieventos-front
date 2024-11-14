@@ -163,8 +163,16 @@ interface ResponseDTO<T> {
     response: T | null
 }
 
+interface AccountInfoDTO {
+    name: string,
+    cedula: string,
+    adress: string,
+    city: string,
+    phone: string
+}
+
 export type {
     LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO,
     CalendarDTO, CalendarOnlyDTO, EditEventDTO, BadRequestFieldsDTO, CartDTO, CartDetailDTO, ErrorDTO,
-    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO
+    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO, AccountInfoDTO
 };
