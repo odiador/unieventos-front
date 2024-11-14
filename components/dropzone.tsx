@@ -44,7 +44,7 @@ const DropZone = ({ croppedImage, aspect, setImageCropped, initialImage }: { cro
                         if (croppedAreaPixels) {
                             getCroppedImg(img, croppedAreaPixels, { horizontal: false, vertical: false }).then((img) => {
                                 setImageCropped(img || "")
-                                setImg(undefined);
+                                setImg("");
                             }).catch(() => { })
                         }
                     }}>Cortar</button>
@@ -65,7 +65,7 @@ const DropZone = ({ croppedImage, aspect, setImageCropped, initialImage }: { cro
                 className="text-xs bg-white w-full flex rounded-t-lg text-black justify-end pr-2">
                 <IconX className="cursor-pointer"
                     onClick={() => {
-                        setImageCropped(process.env.NEXT_PUBLIC_DEFAULT_IMAGE)
+                        setImageCropped("")
                     }} />
 
             </motion.div>
@@ -74,7 +74,7 @@ const DropZone = ({ croppedImage, aspect, setImageCropped, initialImage }: { cro
                     <input {...getInputProps({ multiple: false, accept: "image/*" })} />
                     {isDragActive && <IconUpload />}
                     {!isDragActive && !croppedImage && <IconPlus />}
-                    {!isDragActive && croppedImage && <IconEdit />}
+                    {!isDragActive && croppedImage && croppedImage !== "" && <IconEdit />}
                 </div>
                 {<motion.div
                     animate={control2}

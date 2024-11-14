@@ -44,6 +44,11 @@ const EventPage = () => {
         {loading && <label>Cargando...</label>}
         {!loading && calendars && (
             <div className="flex flex-col gap-2 p-8 w-full justify-start h-full">
+                <div className="flex justify-center">
+                    <button onClick={()=>{
+                        alert("agregar calendario")
+                    }}>Agregar Calendario</button>
+                </div>
                 <div className="flex justify-center gap-2">
                     <button onClick={() => {
                         let n = page;

@@ -306,14 +306,14 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                         </label>
                     </div>}
                 </div>
-                <div className="flex gap-2">
-                    <label>Localidades</label>
-                    {JSON.stringify(eventFound.localities)}
-                </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
+                    <label>Tipo</label>
                     <select name="eventType" defaultValue={eventFound.type}>
                         {eventTypes.map(type => <option key={type}>{type}</option>)}
                     </select>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <label>Estado</label>
                     <select name="status">
                         <option>ACTIVE</option>
                         <option>INATIVE</option>

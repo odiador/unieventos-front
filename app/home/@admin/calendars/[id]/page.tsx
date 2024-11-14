@@ -84,6 +84,9 @@ const EventPage = ({ params }: { params: { id: string } }) => {
                     </div>
                 </div>
                 <h2 className="text-3xl font-bold text-center w-full mt-20">{"Eventos del Calendario"}</h2>
+                <Link className="w-full flex justify-center mt-2" href={`/home/calendars/${params.id}/addEvent`}>
+                    <button >Agregar evento</button>
+                </Link>
                 <div className="flex mt-4 justify-center gap-2 w-full">
                     <button className="button-icon" onClick={() => {
                         let n = page;
@@ -153,7 +156,7 @@ function getEvents(events: FindEventDTO[], id: string) {
         const endDate = endTime.toLocaleDateString();
         const tags = c.tags;
         return (
-            <Link href={`/home/calendars/edit/${encodeURIComponent(id)}/${encodeURIComponent(c.name)}`} className="w-full min-h-40 max-w-5xl flex sm:flex-row hover:scale-105 transition-transform flex-col bg-white/5 rounded-lg p-4 gap-2" key={c.name}>
+            <Link href={`/home/calendars/${encodeURIComponent(id)}/event/${encodeURIComponent(c.id)}`} className="w-full min-h-40 max-w-5xl flex sm:flex-row hover:scale-105 transition-transform flex-col bg-white/5 rounded-lg p-4 gap-2" key={c.name}>
                 <div className="flex flex-1 flex-col pointer-events-none">
                     <div className="text-white/50 flex gap-2">
                         {startDate === endDate ?

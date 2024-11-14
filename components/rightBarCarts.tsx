@@ -84,7 +84,7 @@ const openCartAction = (openRightBar: (content: ReactNode) => void, closeRightBa
                                             <div className="flex items-center justify-end w-full mr-4">
                                                 <Link
                                                     className="hover:scale-125 cursor-pointer transition-transform"
-                                                    href={`/home/calendars/${item.calendarId}/${encodeURIComponent(item.eventName)}`}
+                                                    href={`/home/calendars/${item.calendarId}/event/${encodeURIComponent(item.eventName)}`}
                                                     onClick={() => closeModal()}
                                                 ><IconEye /></Link>
                                                 <IconEdit
