@@ -1,8 +1,9 @@
 "use client";
-import { addItemToCart, findEvent } from "@/api/utils/api";
+import { addItemToCart, deleteEvent, findEvent } from "@/api/utils/api";
 import { useAuthContext } from "@/api/utils/auth";
 import { CartDetailDTO, FindEventDTO, FindEventLocalityDTO } from "@/api/utils/schemas";
 import { formatTime } from "@/api/utils/util";
+import CardShadow from "@/components/cardshadow";
 import { useModal } from "@/components/modal";
 import { openCartAction } from "@/components/rightBarCarts";
 import { IconAddressBook, IconCash, IconCategory2, IconMapPin, IconShoppingCart, IconShoppingCartPlus, IconTextCaption, IconUser, IconUsersGroup } from "@tabler/icons-react";
@@ -16,6 +17,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
     const [eventFound, setEvent] = useState<FindEventDTO | null>(null);
     const [loading, setLoading] = useState(true);
     const { loggedIn, account } = useAuthContext();
+    const { openCustomModal, closeModal, openModal } = useModal();
     const [items, setItems] = useState<CartDetailDTO[]>();
     const router = useRouter();
     useEffect(() => {
@@ -30,6 +32,32 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
             }
         })
     }, []);
+    const openDeleteEventModal = () => {
+        openCustomModal(
+            <div>
+                <CardShadow >
+                    <h1 className="text-3xl font-bold">¿Deseas <strong className="text-red-400 font-black">eliminar</strong> este evento?</h1>
+                    <div className="flex flex-1 items-end justify-end gap-4">
+                        <button className="button-danger"
+                            onClick={() => {
+                                const jwt = getCookie("jwt");
+                                if (jwt) {
+                                    deleteEvent({ idCalendar: params.id, idEvent: params.eventid }, jwt).then(response => {
+                                        closeModal();
+                                        openModal(response.data.message)
+                                        if (response.status == 200) {
+                                            router.push(`/home/calendars/${params.id}`);
+                                        }
+                                    })
+                                }
+                            }}
+                        >Eliminar</button>
+                        <button onClick={() => closeModal()}>Volver</button>
+                    </div>
+                </CardShadow>
+            </div>
+        )
+    }
 
     return <>
         {!loading && !eventFound && <label>No fue encontrado</label>}
@@ -113,6 +141,9 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                 </div>
             </div>}
             <Link href={`/home/calendars/${params.id}/event/${params.eventid}/editLocalities`}><button>Editar Localidades</button></Link>
+            <button className="button-danger" onClick={() => {
+                openDeleteEventModal()
+            }}>Eliminar evento</button>
             <button type="button" className="button-secondary" onClick={() => router.back()}>Volver</button>
         </div>;
     }

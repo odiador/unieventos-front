@@ -114,17 +114,17 @@ interface EditEventDTO {
     idEvent: string,
     name?: string,
     newName?: string | null,
-    eventImage?: string | null,
-    localityImage?: string | null,
+    eventImage?: File | null,
+    localityImage?: File | null,
     city?: string | null,
     description?: string | null,
     address?: string | null,
     startTime?: string | null,
     endTime?: string | null,
     localities?: FindEventLocalityDTO[],
-    tags: EventTagDTO[],
-    status: "ACTIVE" | "INATIVE" | "DELETED",
-    type: typeof eventTypes[number];
+    tags?: EventTagDTO[],
+    status?: "ACTIVE" | "INATIVE" | "DELETED",
+    type?: typeof eventTypes[number];
 }
 
 interface CalendarDTO {

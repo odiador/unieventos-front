@@ -85,17 +85,38 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
             const address = formdata.get("address")?.toString();
             const tags = eventTags;
             const eventType = formdata.get("eventType")?.toString();
-
             const startTime = formStartTime.toString() === eventStartTime.toString() ? null : formStartTime.toISOString();
             const endTime = eventEndTime.toString() === formEndTime.toString() ? null : formEndTime.toISOString();
             const status = formdata.get("status")?.toString();
-            const newEvent = { idCalendar: params.id, idEvent: params.eventid, name, newName, eventImage: eventImage, localityImage, city, description, address, tags, type: eventType, startTime, endTime, status } as EditEventDTO;
+
+            let newEvent = { idCalendar: params.id, idEvent: params.eventid } as EditEventDTO;
+
+            if (name) newEvent.name = name;
+            if (newName && eventFound?.name !== newName) newEvent.newName = newName;
+            if (eventImage) newEvent.eventImage = eventImage;
+            if (localityImage) newEvent.localityImage = localityImage;
+            if (city && eventFound?.city !== city) newEvent.city = city;
+            if (description && eventFound?.description !== description) newEvent.description = description;
+            if (address && eventFound?.address !== address) newEvent.address = address;
+            if (tags) newEvent.tags = tags;
+            if (eventType && eventFound?.type !== eventType) newEvent.type = eventType;
+            if (startTime && eventFound?.startTime !== startTime) newEvent.startTime = startTime;
+            if (endTime && eventFound?.endTime !== endTime) newEvent.endTime = endTime;
+            switch (status) {
+                case 'ACTIVE':
+                case 'INATIVE':
+                case 'DELETED':
+                    if (eventFound?.status != status)
+                        newEvent.status = status;
+                    break;
+            }
             console.log(newEvent);
             const editedEvent = await editEvent(newEvent, getCookie("jwt") || "");
             console.log(editedEvent.data);
 
             if (editedEvent.status == 200) {
                 openModal("Evento editado exitosamente")
+                router.push(`/home/calendars/${params.id}/event/${params.eventid}`)
             } else {
                 const errorData = editedEvent.data as unknown as BadRequestFieldsDTO;
                 openModal(JSON.stringify(errorData));
@@ -230,7 +251,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                 <div className="col-span-1 sm:col-span-2 flex items-center gap-2">
                     <input
                         name="name"
-                        className="border-0 bg-transparent font-bold text-white text-5xl"
+                        className="border-0 py-8 bg-transparent font-bold text-white text-5xl"
                         placeholder="Nombre del Evento"
                         defaultValue={eventFound.name} />
                     <IconEdit className="scale-150 cursor-pointer text-[#9ca3af] hover:text-white transition-colors" onClick={() => {
@@ -329,7 +350,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                     <DropZone aspect={1} croppedImage={locImage} setImageCropped={setLocImage} initialImage={eventFound.localityImage} />
                 </div>
                 <button type="submit">{buttonLoading ? <IconLoader className="w-full animate-spin text-black/50" /> : "Editar evento"}</button>
-                <button type="button" className="button-secondary" onClick={() => router.back()}>Cancelar</button>
+                <button type="button" className="button-secondary" onClick={() => router.back()}>Volver</button>
             </form>
         )}
     </>

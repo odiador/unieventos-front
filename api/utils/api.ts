@@ -50,8 +50,10 @@ const editEvent = (data: EditEventDTO, token: string) => {
             formData.append(`tags[${i}].color`, tag.color)
             formData.append(`tags[${i}].textColor`, tag.textColor)
         })
-    formData.append("status", data.status);
-    formData.append("type", data.type);
+    if (data.status)
+        formData.append("status", data.status);
+    if (data.type)
+        formData.append("type", data.type);
     return executeRequest<FindEventDTO>(`/api/events/edit`,
         {
             method: "POST",
@@ -59,6 +61,20 @@ const editEvent = (data: EditEventDTO, token: string) => {
                 "Authorization": token,
             },
             body: formData,
+            credentials: 'include',
+        }
+    )
+}
+
+const deleteEvent = (data: { idCalendar: string, idEvent: string }, token: string) => {
+    return executeRequest(`/api/events/delete`,
+        {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            body: JSON.stringify(data),
             credentials: 'include',
         }
     )
@@ -363,5 +379,6 @@ function signup(values: { email: string; password: string; name: string; cedula:
 export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
-    applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData, deleteAccount
+    applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData, deleteAccount,
+    deleteEvent
 };
