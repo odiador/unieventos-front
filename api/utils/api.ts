@@ -252,7 +252,7 @@ const findAllCarts = (token: string) => {
 function deleteAccount(data: { email: string, password: string }, jwt: string) {
     return executeRequest<String>("/api/clients/delete",
         {
-            method: "POST",
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": jwt,
@@ -271,6 +271,18 @@ function login(data: string) {
             body: data
         })
 }
+
+function loginCode(data: string) {
+    return executeRequest<LoginResponseDTO>("/api/auth/login",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: data
+        })
+}
+
 function findEvent(data: { idCalendar: string, idEvent: string }) {
     return executeRequest<FindEventDTO>("/api/events/find",
         {

@@ -1,11 +1,12 @@
 "use client";
 
-import { IconX } from "@tabler/icons-react";
-import CardShadow from "./cardshadow";
 import { deleteAccount } from "@/api/utils/api";
-import { getCookie } from "cookies-next";
+import { IconX } from "@tabler/icons-react";
+import { deleteCookie, getCookie } from "cookies-next";
+import CardShadow from "./cardshadow";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
-const deleteAccountModal = (closeModal: () => void, openModal: (d: string) => void) => {
+const deleteAccountModal = (closeModal: () => void, openModal: (d: string) => void, router: AppRouterInstance, updateRole: () => void) => {
     return (
         <CardShadow>
             <IconX className="hover:scale-125 cursor-pointer transition-transform" onClick={() => closeModal()} />
@@ -14,13 +15,17 @@ const deleteAccountModal = (closeModal: () => void, openModal: (d: string) => vo
                 onSubmit={(e) => {
                     e.preventDefault();
                     const formData = new FormData(e.currentTarget);
-                    const email = formData.get("mail")?.toString();
+                    const email = formData.get("email")?.toString();
                     const password = formData.get("password")?.toString();
                     const jwt = getCookie("jwt")
                     if (email && password && jwt) {
                         deleteAccount({ email, password }, jwt).then(response => {
                             closeModal();
                             openModal(response.data.message);
+                            updateRole();
+                            deleteCookie("jwt");
+                            router.refresh();
+                            router.push("/");
                         })
                     } else {
 

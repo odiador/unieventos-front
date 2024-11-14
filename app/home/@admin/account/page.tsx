@@ -171,7 +171,9 @@ const AccountPage = () => {
                 </form>
 
                 <button className="button-danger" type="button" onClick={() => {
-                    openCustomModal(deleteAccountModal(closeModal, openModal));
+                    openCustomModal(deleteAccountModal(closeModal, openModal, router, () => {
+                        updateRole().then()
+                    }));
                 }}>Borra la cuenta</button >
                 <button onClick={(() => router.back())} type="button" className="button-terciary">Volver</button>
             </CardShadow>}

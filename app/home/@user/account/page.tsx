@@ -173,7 +173,9 @@ const AccountPage = () => {
 
                 <button className="button-danger" type="button" onClick={() => {
                     setDeleteLoading(true);
-                    openCustomModal(deleteAccountModal(closeModal, openModal));
+                    openCustomModal(deleteAccountModal(closeModal, openModal, router, () => {
+                        updateRole().then()
+                    }));
                     setDeleteLoading(false);
                 }}>
                     {deleteLoading && <IconLoader className="animate-spin text-black/50" />}
