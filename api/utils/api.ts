@@ -374,6 +374,16 @@ function findEvents(data: { id: string, size: number, page: number }) {
             body: JSON.stringify(data)
         })
 }
+function findEventsFilter(data: { id?: string, size: number, page: number, city?: string, tagName?: string, date?: string, name?: string }) {
+    return executeRequest<FindEventDTO[]>("/api/events/list",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+}
 
 function activate(values: { email: string; code: string; }) {
     return executeRequest<string>("/api/auth/activation/activate",
@@ -412,5 +422,5 @@ export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
     applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData, deleteAccount,
-    deleteEvent, addEvent
+    deleteEvent, addEvent, findEventsFilter
 };

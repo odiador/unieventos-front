@@ -83,6 +83,7 @@ interface CartDetailDTO {
 export const eventTypes = ["SPORT", "CONCERT", "CULTURAL", "FASHION", "BEAUTY"];
 
 interface FindEventDTO {
+    calendarId: string,
     id: string,
     name: string,
     eventImage: string,
