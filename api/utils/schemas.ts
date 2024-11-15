@@ -127,6 +127,21 @@ interface EditEventDTO {
     type?: typeof eventTypes[number];
 }
 
+interface AddEventDTO {
+    idCalendar: string,
+    name: string,
+    eventImage: File,
+    localityImage: File,
+    city: string,
+    description: string,
+    address: string,
+    startTime: string,
+    endTime: string,
+    status: "ACTIVE" | "INATIVE",
+    type: typeof eventTypes[number],
+    tags: EventTagDTO[],
+}
+
 interface CalendarDTO {
     id: string,
     name: string,
@@ -174,5 +189,5 @@ interface AccountInfoDTO {
 export type {
     LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO,
     CalendarDTO, CalendarOnlyDTO, EditEventDTO, BadRequestFieldsDTO, CartDTO, CartDetailDTO, ErrorDTO,
-    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO, AccountInfoDTO
+    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO, AccountInfoDTO, AddEventDTO
 };

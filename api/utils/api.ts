@@ -1,4 +1,4 @@
-import { AccountInfoDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
+import { AccountInfoDTO, AddEventDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -75,6 +75,38 @@ const deleteEvent = (data: { idCalendar: string, idEvent: string }, token: strin
                 "Authorization": token,
             },
             body: JSON.stringify(data),
+            credentials: 'include',
+        }
+    )
+}
+
+
+const addEvent = (data: AddEventDTO, token: string) => {
+    const formData = new FormData();
+    formData.append("idCalendar", data.idCalendar);
+    formData.append("name", data.name);
+    formData.append("address", data.address);
+    formData.append("eventImage", data.eventImage);
+    formData.append("localityImage", data.localityImage);
+    formData.append("city", data.city);
+    formData.append("description", data.description);
+    formData.append("startTime", data.startTime);
+    formData.append("endTime", data.endTime);
+    formData.append("status", data.status);
+    formData.append("type", data.type);
+    data.tags.forEach((tag, i) => {
+        formData.append(`tags[${i}].name`, tag.name)
+        formData.append(`tags[${i}].color`, tag.color)
+        formData.append(`tags[${i}].textColor`, tag.textColor)
+    })
+
+    return executeRequest<FindEventDTO>(`/api/events/create`,
+        {
+            method: "POST",
+            headers: {
+                "Authorization": token,
+            },
+            body: formData,
             credentials: 'include',
         }
     )
@@ -380,5 +412,5 @@ export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
     applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData, deleteAccount,
-    deleteEvent
+    deleteEvent, addEvent
 };
