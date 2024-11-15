@@ -156,7 +156,7 @@ function getEvents(events: FindEventDTO[], id: string) {
         const endDate = endTime.toLocaleDateString();
         const tags = c.tags;
         return (
-            <Link href={`/home/calendars/${encodeURIComponent(id)}/event/${encodeURIComponent(c.id)}`} className="w-full min-h-40 max-w-5xl flex sm:flex-row hover:scale-105 transition-transform flex-col bg-white/5 rounded-lg p-4 gap-2" key={c.name}>
+            <Link href={`/home/calendars/${encodeURIComponent(id)}/event/${encodeURIComponent(c.id)}`} className="w-full min-h-40 max-w-5xl flex sm:flex-row hover:scale-105 transition-transform flex-col bg-white/5 rounded-lg p-4 gap-2" key={c.id}>
                 <div className="flex flex-1 flex-col pointer-events-none">
                     <div className="text-white/50 flex gap-2">
                         {startDate === endDate ?
