@@ -1,4 +1,4 @@
-import { AccountInfoDTO, AddEventDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
+import { AccountInfoDTO, AddEventDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, CouponInfoDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -406,6 +406,18 @@ function sendActivation(email: string) {
         })
 }
 
+function getCoupons(data: { page: number, size: number, status: string }, token: string) {
+    return executeRequest<CouponInfoDTO[]>("/api/coupons/findCoupons",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            body: JSON.stringify(data)
+        })
+}
+
 
 function signup(values: { email: string; password: string; name: string; cedula: string; phone: string; adress: string; }) {
     return executeRequest("/api/auth/create",
@@ -422,5 +434,5 @@ export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
     applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData, deleteAccount,
-    deleteEvent, addEvent, findEventsFilter
+    deleteEvent, addEvent, findEventsFilter, getCoupons
 };

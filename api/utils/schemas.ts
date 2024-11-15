@@ -79,6 +79,19 @@ interface CartDetailDTO {
     freeTickets: number
 }
 
+interface CouponInfoDTO {
+    discount: number,
+    expiryDate: string,
+    code: string,
+    status: string,
+    type: string,
+    name: string,
+    calendarId: string | null,
+    calendarName: string | null,
+    eventId: string | null,
+    eventName: string | null
+}
+
 
 export const eventTypes = ["SPORT", "CONCERT", "CULTURAL", "FASHION", "BEAUTY"];
 
@@ -190,5 +203,5 @@ interface AccountInfoDTO {
 export type {
     LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO,
     CalendarDTO, CalendarOnlyDTO, EditEventDTO, BadRequestFieldsDTO, CartDTO, CartDetailDTO, ErrorDTO,
-    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO, AccountInfoDTO, AddEventDTO
+    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO, AccountInfoDTO, AddEventDTO, CouponInfoDTO
 };
