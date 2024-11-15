@@ -97,6 +97,10 @@ const Header = () => {
 
                         {!account && <Link href={`/auth/login?source=${encodeURIComponent(source)}`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconLogin />Inicia Sesión</Link>}
                         {!account && <Link href={`/auth/signup?source=${encodeURIComponent(source)}`} className="button flex items-center justify-center gap-1 button-secondary" onClick={() => closeRightBar()} ><IconUserPlus />Regístrate</Link>}
+                        {account && <div className="flex w-full flex-col">
+                            <label className="w-full text-center break-all">{account.email}</label>
+                            <label className="w-full font-bold text-center break-all">{account.role}</label>
+                        </div>}
                         {account && <Link href={`/home/account`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Gestionar Cuenta</Link>}
                         {account && account.role == "CLIENT" && <Link href={`/home/orders`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Ver Ordenes</Link>}
                         {account && account.role == "CLIENT" && <Link href={`/home/orderhistory`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Ver Historial de Compras</Link>}
