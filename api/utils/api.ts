@@ -1,4 +1,4 @@
-import { AccountInfoDTO, AddEventDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, CouponInfoDTO, EditEventDTO, EventReportDTO, FindEventDTO, FindEventLocalityDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
+import { AccountInfoDTO, AddEventDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, CouponInfoDTO, EditEventDTO, EventReportDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -290,6 +290,18 @@ const createOrder = (cartId: string, token: string, couponCode?: string) => {
         }
     )
 }
+const cancelOrder = (id: string, token: string) => {
+    return executeRequest(`/api/orders/cancel?id=${id}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            credentials: 'include',
+        }
+    )
+}
 
 const applyCoupon = (code: string, token: string) => {
     return executeRequest<AppliedCouponDTO>(`/api/coupons/apply/${code}`,
@@ -440,6 +452,29 @@ function sendActivation(email: string) {
         })
 }
 
+function generateReport(data: { eventId: string, calendarId: string }, token: string) {
+    return executeRequest<EventReportDTO>(`/api/reports/generate?eventId=${encodeURIComponent(data.eventId)}&calendarId=${encodeURIComponent(data.calendarId)}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+        })
+}
+
+function getCoupons(data: { page: number, size: number, status: string }, token: string) {
+    return executeRequest<CouponInfoDTO[]>("/api/coupons/findCoupons",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            body: JSON.stringify(data)
+        })
+}
+
 
 function signup(values: { email: string; password: string; name: string; cedula: string; phone: string; adress: string; }) {
     return executeRequest("/api/auth/create",
@@ -456,5 +491,5 @@ export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
     applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData, deleteAccount,
-    deleteEvent, addEvent, findEventsFilter
+    deleteEvent, addEvent, findEventsFilter, getCoupons, generateReport, cancelOrder
 };

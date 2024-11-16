@@ -24,6 +24,7 @@ interface OrderDTO {
     id: string,
     clientId: string,
     timestamp: string,
+    initPoint: string,
     payment: Payment,
     items: OrderDetailDTO[],
     status: string,
@@ -77,6 +78,43 @@ interface CartDetailDTO {
     calendarName: string,
     eventImage: string,
     freeTickets: number
+}
+
+interface CouponInfoDTO {
+    discount: number,
+    expiryDate: string,
+    code: string,
+    status: string,
+    type: string,
+    name: string,
+    calendarId: string | null,
+    calendarName: string | null,
+    eventId: string | null,
+    eventName: string | null
+}
+
+interface EventReportDTO {
+    byteArray: Uint8Array;
+    filename: string;
+    filetype: string;
+    sellPercentage: number;
+    soldPercentageByLocality: LocalityDataDTO[];
+    earnedTotal: number;
+    capabilityTotal: number;
+    ticketsSoldTotal: number;
+}
+
+interface LocalityDataDTO {
+    locality: Locality;
+    soldPercentage: number;
+}
+interface Locality {
+    id: string;
+    name: string;
+    price: number;
+    ticketsSold: number;
+    maxCapability: number;
+    retention: number;
 }
 
 
@@ -190,5 +228,6 @@ interface AccountInfoDTO {
 export type {
     LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO,
     CalendarDTO, CalendarOnlyDTO, EditEventDTO, BadRequestFieldsDTO, CartDTO, CartDetailDTO, ErrorDTO,
-    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO, AccountInfoDTO, AddEventDTO
+    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO, AccountInfoDTO, AddEventDTO, CouponInfoDTO,
+    EventReportDTO, LocalityDataDTO, Locality
 };

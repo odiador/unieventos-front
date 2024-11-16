@@ -55,7 +55,6 @@ const defaultColors = [
     }
 ]
 const EventPage = ({ params }: { params: { id: string } }) => {
-    const [loading, setLoading] = useState(true);
     const [buttonLoading, setButtonLoading] = useState(false);
     const [eventTags, setEventTags] = useState<EventTagDTO[]>([]);
     const { openModal, openCustomModal, closeModal } = useModal();
@@ -212,9 +211,6 @@ const EventPage = ({ params }: { params: { id: string } }) => {
 
 
     return <>
-        {!loading && <label>No fue encontrado</label>}
-        {loading && <label>Cargando...</label>}
-
         <form className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2 items-center relative" onSubmit={handleSubmit}>
             <div className="col-span-1 sm:col-span-2 flex items-center gap-2">
                 <input

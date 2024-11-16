@@ -103,6 +103,8 @@ const Header = () => {
                         </div>}
                         {account && <Link href={`/home/account`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Gestionar Cuenta</Link>}
                         {account && account.role == "CLIENT" && <Link href={`/home/orders`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Ver Ordenes</Link>}
+                        {account && account.role == "ADMINISTRATOR" && <Link href={`/home/coupons`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Gestionar Cupones</Link>}
+                        {account && account.role == "ADMINISTRATOR" && <Link href={`/home/reports`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Ver reportes</Link>}
                         {account && account.role == "CLIENT" && <Link href={`/home/orderhistory`} className="button flex items-center justify-center gap-1" onClick={() => closeRightBar()} ><IconUser />Ver Historial de Compras</Link>}
                         <div className="h-full flex place-items-end w-full">
                             {account && <button className="w-full button flex items-center justify-center gap-1 button-secondary" onClick={() => { signout(); closeRightBar(); }}><IconLogout2 />Cerrar Sesión</button>}
