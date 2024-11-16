@@ -8,6 +8,7 @@ import { openCartAction } from "@/components/rightBarCarts";
 import { IconAddressBook, IconCash, IconCategory2, IconMapPin, IconShoppingCart, IconShoppingCartPlus, IconTextCaption, IconUser, IconUsersGroup } from "@tabler/icons-react";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -145,6 +146,7 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                     </div>
                 </div>
             </div>
+            <Link href={`/home/calendars/${params.id}`}><button>Ver Calendario</button></Link>
             <hr className="w-full h-px border-0 bg-white/10" />
 
             {event.localities.length <= 0 && "No puedes inscribirte a este evento"}

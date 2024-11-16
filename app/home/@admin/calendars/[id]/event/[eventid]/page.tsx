@@ -1,7 +1,8 @@
 "use client";
-import { addItemToCart, deleteEvent, findEvent } from "@/api/utils/api";
+import { addItemToCart, deleteEvent, findEvent, generateReport } from "@/api/utils/api";
 import { useAuthContext } from "@/api/utils/auth";
-import { CartDetailDTO, FindEventDTO, FindEventLocalityDTO } from "@/api/utils/schemas";
+import { createPdfFromUint8Array } from "@/api/utils/parsePdf";
+import { CartDetailDTO, EventReportDTO, FindEventDTO, FindEventLocalityDTO } from "@/api/utils/schemas";
 import { formatTime } from "@/api/utils/util";
 import CardShadow from "@/components/cardshadow";
 import { useModal } from "@/components/modal";
@@ -10,7 +11,7 @@ import { IconAddressBook, IconCash, IconCategory2, IconMapPin, IconShoppingCart,
 import { getCookie } from "cookies-next";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
 const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
@@ -112,6 +113,25 @@ const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {
                     </div>
                 </div>
             </div>
+
+            <Link href={`/home/calendars/${params.id}`}><button>Ver Calendario</button></Link>
+            <button onClick={() => {
+                const jwt = getCookie("jwt");
+                if (jwt) {
+                    generateReport({ calendarId: params.id, eventId: params.eventid }, jwt).then(response => {
+                        if (response.status == 201) {
+                            const report = response.data.response as EventReportDTO;
+                            createPdfFromUint8Array(report.byteArray, report.filetype, report.filename).then(() => {
+                                openModal("Reporte generado con éxito")
+                            });
+                        } else {
+                            openModal(response.data.message);
+                        }
+                    })
+                }
+                else
+                    openModal("No hay login");
+            }}>Generar reporte</button>
             <Link href={`/home/calendars/${params.id}/event/${params.eventid}/edit`}><button>Editar Información</button></Link>
             <hr className="w-full h-px border-0 bg-white/10" />
 

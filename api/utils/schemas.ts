@@ -92,6 +92,29 @@ interface CouponInfoDTO {
     eventName: string | null
 }
 
+interface EventReportDTO {
+    byteArray: Uint8Array;
+    filename: string;
+    filetype: string;
+    sellPercentage: number;
+    soldPercentageByLocality: LocalityDataDTO[];
+    earnedTotal: number;
+    capabilityTotal: number;
+    ticketsSoldTotal: number;
+}
+
+interface LocalityDataDTO {
+    locality: Locality;
+    soldPercentage: number;
+}
+interface Locality {
+    id: string;
+    name: string;
+    price: number;
+    ticketsSold: number;
+    maxCapability: number;
+}
+
 
 export const eventTypes = ["SPORT", "CONCERT", "CULTURAL", "FASHION", "BEAUTY"];
 
@@ -203,5 +226,6 @@ interface AccountInfoDTO {
 export type {
     LoginResponseDTO, CheckUserDTO, FindEventDTO, FindEventLocalityDTO, EventTagDTO, ResponseDTO,
     CalendarDTO, CalendarOnlyDTO, EditEventDTO, BadRequestFieldsDTO, CartDTO, CartDetailDTO, ErrorDTO,
-    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO, AccountInfoDTO, AddEventDTO, CouponInfoDTO
+    AppliedCouponDTO, OrderDTO, OrderDetailDTO, Payment, URLDTO, AccountInfoDTO, AddEventDTO, CouponInfoDTO,
+    EventReportDTO, LocalityDataDTO, Locality
 };
