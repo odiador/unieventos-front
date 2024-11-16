@@ -256,6 +256,18 @@ const createOrder = (cartId: string, token: string, couponCode?: string) => {
         }
     )
 }
+const cancelOrder = (id: string, token: string) => {
+    return executeRequest(`/api/orders/cancel?id=${id}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            credentials: 'include',
+        }
+    )
+}
 
 const applyCoupon = (code: string, token: string) => {
     return executeRequest<AppliedCouponDTO>(`/api/coupons/apply/${code}`,
@@ -445,5 +457,5 @@ export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
     applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData, deleteAccount,
-    deleteEvent, addEvent, findEventsFilter, getCoupons, generateReport
+    deleteEvent, addEvent, findEventsFilter, getCoupons, generateReport, cancelOrder
 };

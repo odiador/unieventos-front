@@ -24,6 +24,7 @@ interface OrderDTO {
     id: string,
     clientId: string,
     timestamp: string,
+    initPoint: string,
     payment: Payment,
     items: OrderDetailDTO[],
     status: string,
@@ -113,6 +114,7 @@ interface Locality {
     price: number;
     ticketsSold: number;
     maxCapability: number;
+    retention: number;
 }
 
 

@@ -1,13 +1,21 @@
 "use client";
 
-import { findOrder, payOrder } from "@/api/utils/api";
+import { cancelOrder, findOrder, payOrder } from "@/api/utils/api";
 import { BadRequestFieldsDTO, ErrorDTO, OrderDTO } from "@/api/utils/schemas";
 import CardShadow from "@/components/cardshadow";
 import { useModal } from "@/components/modal";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
+const m: { [name: string]: string } = {
+    "CANCELED": "Cancelada",
+    "PAID": "Pagada",
+    "CREATED": "Creada",
+}
+
 
 const Cart = ({ params }: { params: { id: string } }) => {
     const { openModal } = useModal();
@@ -44,10 +52,16 @@ const Cart = ({ params }: { params: { id: string } }) => {
                         alert(JSON.stringify(orderData.payment))
                         alert(JSON.stringify(orderData.status))
                     }} className="text-3xl font-bold">Tu orden</h1>
-                    {extraData && <label className="text-sm text-white/70 mb-2">{`Ult. modificación: ${extraData.date.toLocaleDateString()} ${extraData.date.toLocaleTimeString()}`}</label>}
+                    <div className="flex gap-2">
+                        <label className="bg-white rounded-full px-4 py-1 w-fit text-black">{m[orderData.status]}</label>
+                        {orderData.initPoint && <label className="bg-white rounded-full px-4 py-1 w-fit text-black">{"Confirmada"}</label>}
+                    </div>
+                    {extraData && <label className="text-sm text-white/70 mb-2">{`Fecha de creación: ${extraData.date.toLocaleDateString()} ${extraData.date.toLocaleTimeString()}`}</label>}
                 </div>
                 <div className="flex lg:hidden flex-col w-full px-4">
-                    <h1 className="text-3xl font-semibold text-nowrap">Resumen del pedido</h1>
+
+                    {orderData.status != "CANCELED" && <h1 className="text-3xl font-semibold text-nowrap break-all">Resumen del pedido</h1>}
+                    {orderData.status == "CANCELED" && <h1 className="text-3xl font-semibold text-nowrap break-all">¿Cómo era tu compra?</h1>}
                     <p className="text-white/70">{`${orderData.items.length} artículo${orderData.items.length == 1 ? "" : "s"}`}</p>
                     <hr className="h-px border-0 w-full bg-white/10 my-4" />
                 </div>
@@ -112,17 +126,42 @@ const Cart = ({ params }: { params: { id: string } }) => {
                     }}>
 
                         <div className="lg:flex hidden flex-col w-fit px-4">
-                            <h1 className="text-3xl font-semibold text-nowrap">Resumen del pedido</h1>
+                            {orderData.status != "CANCELED" && <h1 className="text-3xl font-semibold text-nowrap break-all">Resumen del pedido</h1>}
+                            {orderData.status == "CANCELED" && <h1 className="text-3xl font-semibold text-nowrap break-all">¿Cómo era tu compra?</h1>}
                             <p className="text-white/70">{`${orderData.items.length} artículo${orderData.items.length == 1 ? "" : "s"}`}</p>
                             <hr className="h-px border-0 bg-white/10 my-4" />
                         </div>
                         <div className="w-full flex items-center justify-center">
 
                         </div>
-                        <h3>{`Valor a pagar: $${orderData.total}`}</h3>
+                        {orderData.status === "CANCELED" && <h3>{`Valor que pagarías: $${orderData.total}`}</h3>}
+                        {orderData.status !== "CANCELED" && <h3>{`Valor a pagar: $${orderData.total}`}</h3>}
                         <div className="flex w-full gap-2 sm:gap-4 lg:gap-2 sm:flex-row flex-col">
                             <button className="w-full button-secondary" type="button" onClick={() => router.back()}>Volver</button>
-                            <button className="w-full" type="submit">Continuar con MercadoPago</button>
+                            {
+                                orderData.status !== "PAID" && orderData.status !== "CANCELED" &&
+                                <button type="button"
+                                    onClick={() => {
+                                        const jwt = getCookie("jwt");
+                                        if (jwt) {
+                                            cancelOrder(params.id, jwt).then(response => {
+                                                openModal(response.data.message);
+                                                findOrder(params.id, jwt).then(response => {
+                                                    if (response.status == 200) {
+                                                        setOrderData(response.data.response || undefined);
+                                                    } else {
+                                                        openModal(response.data.message)
+                                                    }
+                                                })
+                                            })
+                                        } else {
+                                            openModal("No hay login")
+                                        }
+                                    }} className="text-nowrap w-full">Cancelar Orden</button>
+                            }
+
+                            {orderData.status !== "PAID" && orderData.status !== "CANCELED" && !orderData.initPoint && <button className="w-full" type="submit">Confirma la orden</button>}
+                            {orderData.status !== "PAID" && orderData.status !== "CANCELED" && orderData.initPoint && <Link className="w-full" type="submit" href={orderData.initPoint}><button type="button" className="w-full bg-[#48B4E2] text-black">Paga con MercadoPago</button></Link>}
                         </div>
                     </form>
                 </div>
