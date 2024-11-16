@@ -6,7 +6,7 @@ import { formatTime } from "@/api/utils/util";
 import { IconArrowLeft, IconArrowRight, IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useModal } from "./modal";
 
@@ -16,7 +16,6 @@ const EventsPageFiltering = ({ calendarId }: { calendarId?: string }) => {
     const [eventsLoading, setEventsLoading] = useState(true);
     const [filtersShowing, setFiltersShowing] = useState(false);
     const searchParams = useSearchParams();
-    const router = useRouter();
 
     const pg = searchParams.get("page");
     const sz = searchParams.get("size");

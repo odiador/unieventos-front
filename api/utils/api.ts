@@ -1,4 +1,4 @@
-import { AccountInfoDTO, AddEventDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, EditEventDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
+import { AccountInfoDTO, AddEventDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, CouponInfoDTO, EditEventDTO, EventReportDTO, FindEventDTO, FindEventLocalityDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -54,7 +54,41 @@ const editEvent = (data: EditEventDTO, token: string) => {
         formData.append("status", data.status);
     if (data.type)
         formData.append("type", data.type);
+    if (data.localities)
+        data.localities.forEach((loc, i) => {
+            formData.append(`localities[${i}].id`, loc.id)
+            formData.append(`localities[${i}].name`, loc.name)
+            formData.append(`localities[${i}].price`, loc.price + "")
+            formData.append(`localities[${i}].maxCapability`, loc.maxCapability + "")
+        })
     return executeRequest<FindEventDTO>(`/api/events/edit`,
+        {
+            method: "POST",
+            headers: {
+                "Authorization": token,
+            },
+            body: formData,
+            credentials: 'include',
+        }
+    )
+}
+
+const editLocalities = (data: {
+    idCalendar: string,
+    idEvent: string,
+    localities: FindEventLocalityDTO[],
+}, token: string) => {
+    const formData = new FormData();
+    formData.append("idCalendar", data.idCalendar);
+    formData.append("idEvent", data.idEvent);
+    if (data.localities)
+        data.localities.forEach((loc, i) => {
+            formData.append(`localities[${i}].id`, loc.id)
+            formData.append(`localities[${i}].name`, loc.name)
+            formData.append(`localities[${i}].price`, loc.price + "")
+            formData.append(`localities[${i}].maxCapability`, loc.maxCapability + "")
+        })
+    return executeRequest<FindEventDTO>(`/api/events/editLocalities`,
         {
             method: "POST",
             headers: {
