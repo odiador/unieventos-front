@@ -1,13 +1,12 @@
 "use client";
-import { editEvent, editLocalities, findEvent } from "@/api/utils/api";
-import { BadRequestFieldsDTO, EditEventDTO, EventTagDTO, FindEventDTO, FindEventLocalityDTO } from "@/api/utils/schemas";
-import { getImageFromString } from "@/api/utils/util";
+import { editEvent, findEvent } from "@/api/utils/api";
+import { FindEventDTO, FindEventLocalityDTO } from "@/api/utils/schemas";
 import CardShadow from "@/components/cardshadow";
 import { useModal } from "@/components/modal";
 import { IconCash, IconEdit, IconLoader, IconTextCaption, IconUser, IconUsersGroup, IconX } from "@tabler/icons-react";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 
 const EventPage = ({ params }: { params: { id: string, eventid: string } }) => {

@@ -1,4 +1,4 @@
-import { AccountInfoDTO, AddEventDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, CouponInfoDTO, EditEventDTO, EventReportDTO, FindEventDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
+import { AccountInfoDTO, AddEventDTO, AppliedCouponDTO, CalendarOnlyDTO, CartDTO, CheckUserDTO, CouponInfoDTO, EditEventDTO, EventReportDTO, FindEventDTO, FindEventLocalityDTO, LoginResponseDTO, OrderDTO, ResponseDTO, URLDTO } from "./schemas";
 const executeRequest = async<T>(uri: string, options: RequestInit): Promise<{ status: number, data: ResponseDTO<T> }> => {
     let data;
     try {
@@ -491,5 +491,5 @@ export {
     activate, checkUser, findCalendarOnly, findEvent, findEvents, listCalendars, login, sendActivation,
     signup, validateMail, editEvent, findAllCarts, createCart, addItemToCart, findCart, removeItemToCart,
     applyCoupon, createOrder, findOrder, payOrder, findAllOrders, getAccountInfo, editUserData, deleteAccount,
-    deleteEvent, addEvent, findEventsFilter, getCoupons, generateReport, cancelOrder
+    deleteEvent, addEvent, findEventsFilter, getCoupons, generateReport, cancelOrder, editLocalities
 };
